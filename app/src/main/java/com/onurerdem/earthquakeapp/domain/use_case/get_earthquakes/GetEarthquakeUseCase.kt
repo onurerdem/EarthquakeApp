@@ -11,7 +11,7 @@ import java.io.IOError
 import javax.inject.Inject
 
 class GetEarthquakeUseCase @Inject constructor(private val repository: EarthquakeRepository) {
-    fun executeGetEarthquakes() : Flow<Resource<List<Earthquake>>> = flow {
+    fun executeGetEarthquakes(search: String) : Flow<Resource<List<Earthquake>>> = flow {
         try {
             emit(Resource.Loading())
             val earthquakeList = repository.getEarthquakes()
