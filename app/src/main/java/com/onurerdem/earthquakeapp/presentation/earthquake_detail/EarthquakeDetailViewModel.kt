@@ -8,10 +8,12 @@ import androidx.lifecycle.viewModelScope
 import com.onurerdem.earthquakeapp.domain.use_case.get_earthquake_detail.GetEarthquakeDetailsUseCase
 import com.onurerdem.earthquakeapp.util.Constants.EARTHQUAKE_ID
 import com.onurerdem.earthquakeapp.util.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
+@HiltViewModel
 class EarthquakeDetailViewModel @Inject constructor(
     private val getEarthquakeDetailsUseCase: GetEarthquakeDetailsUseCase,
     private val savedStateHandle: SavedStateHandle

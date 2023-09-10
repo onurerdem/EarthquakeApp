@@ -7,12 +7,14 @@ import androidx.lifecycle.viewModelScope
 import com.onurerdem.earthquakeapp.domain.model.Earthquake
 import com.onurerdem.earthquakeapp.domain.use_case.get_earthquakes.GetEarthquakeUseCase
 import com.onurerdem.earthquakeapp.util.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import java.util.Locale
 import javax.inject.Inject
 
+@HiltViewModel
 class EarthquakesViewModel @Inject constructor(
     private val getEarthquakeUseCase: GetEarthquakeUseCase
 ) : ViewModel() {
