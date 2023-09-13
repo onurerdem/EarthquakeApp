@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.onurerdem.earthquakeapp.domain.model.Earthquake
+import com.onurerdem.earthquakeapp.presentation.formatDateForTurkishLocale
 
 @Composable
 fun EarthquakeListRow(
@@ -43,7 +44,7 @@ fun EarthquakeListRow(
                 modifier = Modifier.fillMaxWidth(.6f)
                 )
 
-            Text(earthquake.date,
+            Text("Tarih: " + formatDateForTurkishLocale(date = earthquake.date.substring(0, 10)) + "," + " Saat:" + earthquake.date.substring(10, 19),
                 style = MaterialTheme.typography.subtitle2,
                 overflow = TextOverflow.Ellipsis,
                 color = Color.Black,

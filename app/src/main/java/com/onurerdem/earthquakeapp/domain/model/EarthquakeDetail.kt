@@ -6,12 +6,12 @@ import com.onurerdem.earthquakeapp.data.remote.dto.GeojsonX
 
 data class EarthquakeDetail (
     val date: String,
-    val depth: Int,
+    val depth: Double,
     val geojson: GeojsonX,
     val closestCities: List<ClosestCityX>,
     val airports: List<AirportX>,
     val population: Int,
-    val mag: Int,
+    val mag: Double,
     val provider: String,
     val title: String
 )

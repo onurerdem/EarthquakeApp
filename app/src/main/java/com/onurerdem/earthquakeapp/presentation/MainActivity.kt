@@ -10,8 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.onurerdem.earthquakeapp.presentation.earthquake_detail.views.EarthquakeDetailScreen
 import com.onurerdem.earthquakeapp.presentation.earthquakes.views.EarthquakeScreen
 import com.onurerdem.earthquakeapp.presentation.ui.theme.EarthquakeAppTheme
+import com.onurerdem.earthquakeapp.util.Constants.EARTHQUAKE_ID
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -30,8 +32,8 @@ class MainActivity : ComponentActivity() {
                             EarthquakeScreen(navController = navController)
                         }
 
-                        composable(route = Screen.EarthquakeDetailScreen.route) {
-
+                        composable(route = Screen.EarthquakeDetailScreen.route + "/{${EARTHQUAKE_ID}}") {
+                            EarthquakeDetailScreen()
                         }
                     }
                 }
