@@ -12,16 +12,21 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
@@ -35,6 +40,7 @@ import com.onurerdem.earthquakeapp.presentation.Screen
 import com.onurerdem.earthquakeapp.presentation.earthquakes.EarthquakesEvent
 import com.onurerdem.earthquakeapp.presentation.earthquakes.EarthquakesViewModel
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun EarthquakeScreen(
     navController: NavController,
@@ -42,9 +48,14 @@ fun EarthquakeScreen(
 ) {
     val state = viewModel.state.value
 
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
+
+    val pullRefreshState = rememberPullRefreshState(isRefreshing, { viewModel.onEvent(EarthquakesEvent.Search("")) })
+
     Box(modifier = Modifier
         .fillMaxSize()
-        .background(Color.White)) {
+        .background(Color.White)
+        .pullRefresh(pullRefreshState)) {
         Column {
             EarthquakeSearchBar(modifier = Modifier
                 .fillMaxWidth()
@@ -63,6 +74,12 @@ fun EarthquakeScreen(
                 }
             }
         }
+
+        PullRefreshIndicator(
+            refreshing = isRefreshing,
+            state = pullRefreshState,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
     }
 }
 

@@ -9,6 +9,9 @@ import com.onurerdem.earthquakeapp.domain.use_case.get_earthquakes.GetEarthquake
 import com.onurerdem.earthquakeapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import java.util.Locale
@@ -20,6 +23,10 @@ class EarthquakesViewModel @Inject constructor(
 ) : ViewModel() {
     private val _state = mutableStateOf<EarthquakesState>(EarthquakesState())
     val state : State<EarthquakesState> = _state
+
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean>
+        get() = _isRefreshing.asStateFlow()
 
     private var job : Job? = null
 
@@ -57,6 +64,8 @@ class EarthquakesViewModel @Inject constructor(
                     _state.value = EarthquakesState(isLoading = true)
                 }
             }
+
+            _isRefreshing.emit(false)
         }.launchIn(viewModelScope)
     }
 
