@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.onurerdem.earthquakeapp.presentation.earthquake_detail.views.EarthquakeDetailScreen
 import com.onurerdem.earthquakeapp.presentation.earthquakes.views.EarthquakeScreen
+import com.onurerdem.earthquakeapp.presentation.splash.views.SplashScreen
 import com.onurerdem.earthquakeapp.presentation.ui.theme.EarthquakeAppTheme
 import com.onurerdem.earthquakeapp.util.Constants.EARTHQUAKE_ID
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,7 +28,11 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = Screen.EarthquakeScreen.route) {
+                    NavHost(navController = navController, startDestination = Screen.SplashScreen.route) {
+                        composable(route = Screen.SplashScreen.route) {
+                            SplashScreen(navController = navController)
+                        }
+
                         composable(route = Screen.EarthquakeScreen.route) {
                             EarthquakeScreen(navController = navController)
                         }
