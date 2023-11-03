@@ -27,14 +27,15 @@ class SplashViewModel @Inject constructor(
         getSplashUseCase.executeGetSplash().onEach {
             when (it) {
                 is Resource.Success -> {
+                    _state.value = SplashState()
                 }
 
                 is Resource.Error -> {
                     _state.value = SplashState(error = it.message ?: "Error!")
-
                 }
 
                 is Resource.Loading -> {
+                    _state.value = SplashState(isLoading = true)
                 }
             }
         }.launchIn(viewModelScope)

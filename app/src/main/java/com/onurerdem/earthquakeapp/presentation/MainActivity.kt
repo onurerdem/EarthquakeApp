@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.onurerdem.earthquakeapp.presentation.earthquake_detail.views.EarthquakeDetailScreen
 import com.onurerdem.earthquakeapp.presentation.earthquakes.views.EarthquakeScreen
+import com.onurerdem.earthquakeapp.presentation.onboarding.views.OnboardingScreen
 import com.onurerdem.earthquakeapp.presentation.splash.views.SplashScreen
 import com.onurerdem.earthquakeapp.presentation.ui.theme.EarthquakeAppTheme
 import com.onurerdem.earthquakeapp.util.Constants.EARTHQUAKE_ID
@@ -30,7 +31,11 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = Screen.SplashScreen.route) {
                         composable(route = Screen.SplashScreen.route) {
-                            SplashScreen(navController = navController)
+                            SplashScreen(navController = navController, context = this@MainActivity)
+                        }
+
+                        composable(route = Screen.OnboardingScreen.route) {
+                            OnboardingScreen(navController = navController, context = this@MainActivity)
                         }
 
                         composable(route = Screen.EarthquakeScreen.route) {

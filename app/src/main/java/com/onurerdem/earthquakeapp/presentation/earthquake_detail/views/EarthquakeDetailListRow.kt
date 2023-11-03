@@ -1,5 +1,6 @@
 package com.onurerdem.earthquakeapp.presentation.earthquake_detail.views
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,7 +37,7 @@ fun EarthquakeDetailListRow(
                     text = closestCity.name,
                     style = MaterialTheme.typography.body2,
                     overflow = TextOverflow.Ellipsis,
-                    color = Color.Black,
+                    color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                     textAlign = TextAlign.Start
                 )
             }
@@ -46,7 +47,7 @@ fun EarthquakeDetailListRow(
                     text = closestCity.population.toString(),
                     style = MaterialTheme.typography.body2,
                     overflow = TextOverflow.Ellipsis,
-                    color = Color.Black,
+                    color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                     textAlign = TextAlign.Start
                 )
             }
@@ -56,7 +57,7 @@ fun EarthquakeDetailListRow(
                     text = closestCity.distance.toString() + " km",
                     style = MaterialTheme.typography.body2,
                     overflow = TextOverflow.Ellipsis,
-                    color = Color.Black,
+                    color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                     textAlign = TextAlign.Start
                 )
             }
@@ -70,7 +71,7 @@ fun EarthquakeDetailListRow(
                     text = airports.name,
                     style = MaterialTheme.typography.body2,
                     overflow = TextOverflow.Ellipsis,
-                    color = Color.Black,
+                    color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                     textAlign = TextAlign.Start
                 )
             }
@@ -80,7 +81,7 @@ fun EarthquakeDetailListRow(
                     text = airports.distance.toString() + " km",
                     style = MaterialTheme.typography.body2,
                     overflow = TextOverflow.Ellipsis,
-                    color = Color.Black,
+                    color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                     textAlign = TextAlign.Start
                 )
             }

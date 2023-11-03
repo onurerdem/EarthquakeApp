@@ -1,6 +1,7 @@
 package com.onurerdem.earthquakeapp.presentation.earthquake_detail.views
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,7 +49,7 @@ fun EarthquakeDetailScreen(
 
     Box(modifier = Modifier
         .fillMaxSize()
-        .background(Color.White),
+        .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White),
         contentAlignment = Alignment.Center
     ) {
         state.earthquake?.let {
@@ -60,7 +61,7 @@ fun EarthquakeDetailScreen(
                     text = "Depremin Konum Noktası:",
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(8.dp),
-                    color = Color.Black,
+                    color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                     style = MaterialTheme.typography.subtitle1,
                     fontWeight = FontWeight.Bold
                 )
@@ -102,7 +103,7 @@ fun EarthquakeDetailScreen(
                         text = "Depremin Ayrıntıları:",
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
-                        color = Color.Black,
+                        color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                         style = MaterialTheme.typography.subtitle1,
                         fontWeight = FontWeight.Bold
                     )
@@ -111,14 +112,14 @@ fun EarthquakeDetailScreen(
                         text = it.title,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
-                        color = Color.Black
+                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
                     )
 
                     Text(
                         text = "Tarih: " + formatDateForTurkishLocale(date = it.date.substring(0, 10)) + "," + " Saat:" + it.date.substring(10, 19),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
-                        color = Color.Black
+                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
                     )
 
                     Text(
@@ -129,28 +130,28 @@ fun EarthquakeDetailScreen(
                         },
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
-                        color = Color.Black
+                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
                     )
 
                     Text(
                         text = "Deprem büyüklüğü: " + it.mag.toString(),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
-                        color = Color.Black
+                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
                     )
 
                     Text(
                         text = "Deprem derinliği: " + it.depth.toString() + " km",
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
-                        color = Color.Black
+                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
                     )
 
                     Text(
                         text = "Şehrin nüfusu: " + it.population.toString(),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
-                        color = Color.Black
+                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
                     )
 
                     Column {
@@ -158,7 +159,7 @@ fun EarthquakeDetailScreen(
                             text = "Depreme Yakın Şehirler:",
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(8.dp),
-                            color = Color.Black,
+                            color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                             style = MaterialTheme.typography.subtitle1,
                             fontWeight = FontWeight.Bold
                         )
@@ -173,7 +174,7 @@ fun EarthquakeDetailScreen(
                             text = "Depreme Yakın Havalimanları:",
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(8.dp),
-                            color = Color.Black,
+                            color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                             style = MaterialTheme.typography.subtitle1,
                             fontWeight = FontWeight.Bold
                         )
