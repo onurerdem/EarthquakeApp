@@ -1,5 +1,6 @@
 package com.onurerdem.earthquakeapp.presentation.splash.views
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +26,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.onurerdem.earthquakeapp.R
+import com.onurerdem.earthquakeapp.presentation.MainActivity
 import com.onurerdem.earthquakeapp.presentation.Screen
 import com.onurerdem.earthquakeapp.presentation.splash.SplashViewModel
 import kotlinx.coroutines.delay
@@ -31,6 +34,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun SplashScreen(
     navController: NavHostController,
+    context: MainActivity,
     splashViewModel: SplashViewModel = hiltViewModel()
 ) {
     val state = splashViewModel.state.value
@@ -38,8 +42,13 @@ fun SplashScreen(
     LaunchedEffect(key1 = true) {
         delay(2000)
 
-        navController.popBackStack()
-        navController.navigate(Screen.EarthquakeScreen.route)
+        if (onBoardingIsFinished(context = context)) {
+            navController.popBackStack()
+            navController.navigate(Screen.EarthquakeScreen.route)
+        } else {
+            navController.popBackStack()
+            navController.navigate(Screen.OnboardingScreen.route)
+        }
 
     }
 
@@ -65,6 +74,10 @@ fun SplashScreen(
                     .align(Alignment.CenterHorizontally)
             )
         }
+
+        if (state.isLoading) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+        }
     }
 }
 
@@ -76,4 +89,9 @@ fun LoaderAnimation(modifier: Modifier, anim: Int) {
         composition = composition, iterations = LottieConstants.IterateForever,
         modifier = modifier
     )
+}
+
+private fun onBoardingIsFinished(context: MainActivity): Boolean {
+    val sharedPreferences = context.getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
+    return sharedPreferences.getBoolean("isFinished", false)
 }

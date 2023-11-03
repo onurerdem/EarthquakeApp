@@ -2,6 +2,7 @@ package com.onurerdem.earthquakeapp.presentation.earthquakes.views
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,7 +42,7 @@ fun EarthquakeListRow(
             Text(earthquake.title,
                 style = MaterialTheme.typography.subtitle1,
                 overflow = TextOverflow.Ellipsis,
-                color = Color.Black,
+                color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.fillMaxWidth(.6f).horizontalScroll(rememberScrollState())
                 )
@@ -49,7 +50,7 @@ fun EarthquakeListRow(
             Text("Tarih: " + formatDateForTurkishLocale(date = earthquake.date.substring(0, 10)) + "," + " Saat:" + earthquake.date.substring(10, 19),
                 style = MaterialTheme.typography.subtitle2,
                 overflow = TextOverflow.Ellipsis,
-                color = Color.Black,
+                color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.fillMaxWidth(.6f).horizontalScroll(rememberScrollState())
             )
@@ -61,14 +62,14 @@ fun EarthquakeListRow(
             Text("Büyüklük: " + earthquake.mag.toString(),
                 style = MaterialTheme.typography.body1,
                 overflow = TextOverflow.Ellipsis,
-                color = Color.Black,
+                color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                 textAlign = TextAlign.End
             )
 
             Text("Derinlik: " + earthquake.depth.toString() + " km",
                 style = MaterialTheme.typography.body2,
                 overflow = TextOverflow.Ellipsis,
-                color = Color.Black,
+                color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                 textAlign = TextAlign.End
             )
         }

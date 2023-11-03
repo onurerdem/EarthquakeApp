@@ -1,7 +1,10 @@
 package com.onurerdem.earthquakeapp.presentation.earthquakes.views
 
+import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +21,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -31,14 +35,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.onurerdem.earthquakeapp.presentation.AlertDialogExample
 import com.onurerdem.earthquakeapp.presentation.Screen
 import com.onurerdem.earthquakeapp.presentation.earthquakes.EarthquakesEvent
 import com.onurerdem.earthquakeapp.presentation.earthquakes.EarthquakesViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -52,9 +59,29 @@ fun EarthquakeScreen(
 
     val pullRefreshState = rememberPullRefreshState(isRefreshing, { viewModel.onEvent(EarthquakesEvent.Search("")) })
 
+    val openAlertDialog = remember { mutableStateOf(false) }
+
+    val activity = (LocalContext.current as? Activity)
+
+    when {
+        openAlertDialog.value -> {
+            AlertDialogExample(
+                onDismissRequest = { openAlertDialog.value = false },
+                onConfirmation = {
+                    openAlertDialog.value = false
+                    activity?.finish()
+                },
+                dialogTitle = "Çıkış",
+                dialogText = "Çıkmak istediğinize emin misiniz?",
+                icon = Icons.Default.ExitToApp,
+                iconContentColor = Color.Red
+            )
+        }
+    }
+
     Box(modifier = Modifier
         .fillMaxSize()
-        .background(Color.White)
+        .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
         .pullRefresh(pullRefreshState)) {
         Column {
             EarthquakeSearchBar(modifier = Modifier
@@ -80,6 +107,10 @@ fun EarthquakeScreen(
             state = pullRefreshState,
             modifier = Modifier.align(Alignment.TopCenter)
         )
+    }
+
+    BackHandler {
+        openAlertDialog.value = !openAlertDialog.value
     }
 }
 
@@ -116,13 +147,13 @@ fun EarthquakeSearchBar(
             }),
             maxLines = 1,
             singleLine = true,
-            textStyle = TextStyle(color = Color.Black),
+            textStyle = TextStyle(color = if (isSystemInDarkTheme()) Color.White else Color.Black),
             shape = RoundedCornerShape(40.dp),
-            colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White),
+            colors = TextFieldDefaults.textFieldColors(backgroundColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.White),
             modifier = Modifier
                 .fillMaxWidth()
                 .shadow(4.dp, CircleShape)
-                .background(Color.Black, CircleShape)
+                .background(if (isSystemInDarkTheme()) Color.White else Color.Black, CircleShape)
                 .padding(4.dp)
                 .onFocusChanged {
                     isHintDisplayed = (!it.isFocused) && text.isEmpty()
@@ -134,7 +165,8 @@ fun EarthquakeSearchBar(
                         focusManager.clearFocus()
                     },
                     imageVector = Icons.Default.Search,
-                    contentDescription = "Search icon."
+                    contentDescription = "Search icon.",
+                    tint = if (isSystemInDarkTheme()) Color.LightGray else Color.Gray
                 )
             },
             trailingIcon = {
@@ -145,14 +177,15 @@ fun EarthquakeSearchBar(
                         focusManager.clearFocus()
                     },
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Close icon."
+                    contentDescription = "Close icon.",
+                    tint = if (isSystemInDarkTheme()) Color.LightGray else Color.Gray
                 )
             }
         )
 
         if (isHintDisplayed) {
             Text(text = hint,
-                color = Color.LightGray,
+                color = if (isSystemInDarkTheme()) Color.Gray else Color.LightGray,
                 modifier = Modifier.padding(horizontal = 55.dp, vertical = 20.dp)
                 )
         }

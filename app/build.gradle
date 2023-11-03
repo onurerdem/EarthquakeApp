@@ -109,4 +109,7 @@ dependencies {
 
     //lottie
     implementation( "com.airbnb.android:lottie-compose:6.1.0")
+
+    //pager
+    implementation ("com.google.accompanist:accompanist-pager:0.32.0")
 }

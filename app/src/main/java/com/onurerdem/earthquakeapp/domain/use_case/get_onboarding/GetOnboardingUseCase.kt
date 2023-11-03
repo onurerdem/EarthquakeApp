@@ -1,4 +1,4 @@
-package com.onurerdem.earthquakeapp.domain.use_case.get_splash
+package com.onurerdem.earthquakeapp.domain.use_case.get_onboarding
 
 import androidx.annotation.Nullable
 import com.onurerdem.earthquakeapp.util.Resource
@@ -8,8 +8,8 @@ import retrofit2.HttpException
 import java.io.IOError
 import javax.inject.Inject
 
-class GetSplashUseCase @Inject constructor() {
-    fun executeGetSplash() : Flow<Resource<Nullable>> = flow {
+class GetOnboardingUseCase @Inject constructor() {
+    fun executeGetOnboarding() : Flow<Resource<Nullable>> = flow {
         try {
             emit(Resource.Loading())
             emit(Resource.Success(Nullable()))
