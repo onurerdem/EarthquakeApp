@@ -1,6 +1,7 @@
 package com.onurerdem.earthquakeapp.presentation.splash.views
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +26,7 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.google.firebase.auth.FirebaseAuth
 import com.onurerdem.earthquakeapp.R
 import com.onurerdem.earthquakeapp.presentation.MainActivity
 import com.onurerdem.earthquakeapp.presentation.Screen
@@ -43,8 +45,15 @@ fun SplashScreen(
         delay(2000)
 
         if (onBoardingIsFinished(context = context)) {
-            navController.popBackStack()
-            navController.navigate(Screen.EarthquakeScreen.route)
+            if (FirebaseAuth.getInstance().currentUser != null) {
+                Log.d(FirebaseAuth.getInstance().currentUser.toString(), "Valid session")
+                navController.popBackStack()
+                navController.navigate(Screen.EarthquakeScreen.route)
+            } else {
+                Log.d(FirebaseAuth.getInstance().currentUser.toString(), "User is not logged in")
+                navController.popBackStack()
+                navController.navigate(Screen.RegisterScreen.route)
+            }
         } else {
             navController.popBackStack()
             navController.navigate(Screen.OnboardingScreen.route)

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "613203007611",
+    "project_id": "earthquakeapp-acb66",
+    "storage_bucket": "earthquakeapp-acb66.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:613203007611:android:31a58afd1767467c3deade",
+        "android_client_info": {
+          "package_name": "com.onurerdem.earthquakeapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5xtRkjO--s2AkvAJOVVTRNruEK_DsEyA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

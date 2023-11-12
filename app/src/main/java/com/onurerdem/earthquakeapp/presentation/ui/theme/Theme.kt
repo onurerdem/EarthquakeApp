@@ -65,6 +65,7 @@ fun EarthquakeAppTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
+        shapes = componentShapes,
         content = content
     )
 }

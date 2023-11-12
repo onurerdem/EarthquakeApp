@@ -45,7 +45,6 @@ import com.onurerdem.earthquakeapp.presentation.AlertDialogExample
 import com.onurerdem.earthquakeapp.presentation.Screen
 import com.onurerdem.earthquakeapp.presentation.earthquakes.EarthquakesEvent
 import com.onurerdem.earthquakeapp.presentation.earthquakes.EarthquakesViewModel
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -79,10 +78,12 @@ fun EarthquakeScreen(
         }
     }
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
-        .pullRefresh(pullRefreshState)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
+            .pullRefresh(pullRefreshState)
+    ) {
         Column {
             EarthquakeSearchBar(modifier = Modifier
                 .fillMaxWidth()
@@ -92,9 +93,9 @@ fun EarthquakeScreen(
                     viewModel.onEvent(EarthquakesEvent.Search(it))
                 }
             )
-            
+
             LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(state.earthquakes) {earthquake ->
+                items(state.earthquakes) { earthquake ->
                     EarthquakeListRow(earthquake = earthquake, onItemClick = {
                         navController.navigate(Screen.EarthquakeDetailScreen.route + "/${earthquake.earthquake_id}")
                     })
@@ -136,7 +137,7 @@ fun EarthquakeSearchBar(
         TextField(value = text,
             onValueChange = {
                 text = it
-                if((prevLength == 3 && it.length < 3) || it.length > 2) {
+                if ((prevLength == 3 && it.length < 3) || it.length > 2) {
                     onSearch(text)
                 }
                 prevLength = it.length
@@ -184,10 +185,11 @@ fun EarthquakeSearchBar(
         )
 
         if (isHintDisplayed) {
-            Text(text = hint,
+            Text(
+                text = hint,
                 color = if (isSystemInDarkTheme()) Color.Gray else Color.LightGray,
                 modifier = Modifier.padding(horizontal = 55.dp, vertical = 20.dp)
-                )
+            )
         }
 
     }
