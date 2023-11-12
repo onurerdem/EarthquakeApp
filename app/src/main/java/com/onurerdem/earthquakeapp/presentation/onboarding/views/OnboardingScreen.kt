@@ -237,7 +237,7 @@ fun ButtonsSection(
                     openAlertDialog.value = false
                     onBoardingIsFinished(context = context)
                     navController.popBackStack()
-                    navController.navigate(Screen.EarthquakeScreen.route)
+                    navController.navigate(Screen.RegisterScreen.route)
                 },
                 dialogTitle = "Uyarı",
                 dialogText = "Başlamak istediğinize emin misiniz?",

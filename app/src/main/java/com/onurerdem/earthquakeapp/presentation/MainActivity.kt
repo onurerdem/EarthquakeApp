@@ -12,7 +12,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.onurerdem.earthquakeapp.presentation.earthquake_detail.views.EarthquakeDetailScreen
 import com.onurerdem.earthquakeapp.presentation.earthquakes.views.EarthquakeScreen
+import com.onurerdem.earthquakeapp.presentation.forgot_password.views.ForgotPasswordScreen
+import com.onurerdem.earthquakeapp.presentation.login.views.LoginScreen
 import com.onurerdem.earthquakeapp.presentation.onboarding.views.OnboardingScreen
+import com.onurerdem.earthquakeapp.presentation.register.views.RegisterScreen
+import com.onurerdem.earthquakeapp.presentation.register.views.TermsAndConditionsScreen
 import com.onurerdem.earthquakeapp.presentation.splash.views.SplashScreen
 import com.onurerdem.earthquakeapp.presentation.ui.theme.EarthquakeAppTheme
 import com.onurerdem.earthquakeapp.util.Constants.EARTHQUAKE_ID
@@ -36,6 +40,22 @@ class MainActivity : ComponentActivity() {
 
                         composable(route = Screen.OnboardingScreen.route) {
                             OnboardingScreen(navController = navController, context = this@MainActivity)
+                        }
+
+                        composable(route = Screen.RegisterScreen.route) {
+                            RegisterScreen(navController = navController, context = this@MainActivity)
+                        }
+
+                        composable(route = Screen.TermsAndConditionsScreen.route) {
+                            TermsAndConditionsScreen()
+                        }
+
+                        composable(route = Screen.LoginScreen.route) {
+                            LoginScreen(navController = navController, context = this@MainActivity)
+                        }
+
+                        composable(route = Screen.ForgotPasswordScreen.route) {
+                            ForgotPasswordScreen(navController = navController, context = this@MainActivity)
                         }
 
                         composable(route = Screen.EarthquakeScreen.route) {
