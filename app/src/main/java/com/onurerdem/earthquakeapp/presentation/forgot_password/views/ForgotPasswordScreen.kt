@@ -1,7 +1,6 @@
 package com.onurerdem.earthquakeapp.presentation.forgot_password.views
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -31,6 +30,7 @@ import com.onurerdem.earthquakeapp.presentation.NormalTextComponent
 import com.onurerdem.earthquakeapp.presentation.Screen
 import com.onurerdem.earthquakeapp.presentation.forgot_password.ForgotPasswordEvent
 import com.onurerdem.earthquakeapp.presentation.forgot_password.ForgotPasswordViewModel
+import com.onurerdem.earthquakeapp.presentation.isDarkThemeMode
 import kotlinx.coroutines.launch
 
 @Composable
@@ -49,18 +49,18 @@ fun ForgotPasswordScreen(
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
+                .background(if (isDarkThemeMode(context = context)) Color.DarkGray else Color.White)
                 .padding(28.dp)
         ) {
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
+                    .background(if (isDarkThemeMode(context = context)) Color.DarkGray else Color.White)
             ) {
 
-                NormalTextComponent(value = "Merhaba")
-                HeadingTextComponent(value = "Şifrenizi yenileyebilirsiniz.")
+                NormalTextComponent(value = "Merhaba", context = context)
+                HeadingTextComponent(value = "Şifrenizi yenileyebilirsiniz.", context = context)
                 Spacer(modifier = Modifier.height(20.dp))
 
                 MyTextFieldComponent(labelValue = "Email",
@@ -71,7 +71,8 @@ fun ForgotPasswordScreen(
                         }
                     },
                     errorStatus = forgotPasswordViewModel.forgotPasswordState.value.emailError,
-                    screen = Screen.ForgotPasswordScreen
+                    screen = Screen.ForgotPasswordScreen,
+                    context = context
                 )
 
                 if (!forgotPasswordViewModel.errorEmailText.isNullOrEmpty() && !forgotPasswordViewModel.errorEmailText.isNullOrBlank() && forgotPasswordViewModel.errorEmailText != "") {

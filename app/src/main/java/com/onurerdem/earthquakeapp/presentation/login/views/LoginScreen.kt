@@ -1,7 +1,6 @@
 package com.onurerdem.earthquakeapp.presentation.login.views
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -32,6 +31,7 @@ import com.onurerdem.earthquakeapp.presentation.NormalTextComponent
 import com.onurerdem.earthquakeapp.presentation.PasswordTextFieldComponent
 import com.onurerdem.earthquakeapp.presentation.Screen
 import com.onurerdem.earthquakeapp.presentation.ClickableUnderLinedTextComponent
+import com.onurerdem.earthquakeapp.presentation.isDarkThemeMode
 import com.onurerdem.earthquakeapp.presentation.login.LoginEvent
 import com.onurerdem.earthquakeapp.presentation.login.LoginViewModel
 
@@ -50,27 +50,29 @@ fun LoginScreen(
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
+                .background(if (isDarkThemeMode(context = context)) Color.DarkGray else Color.White)
                 .padding(28.dp)
         ) {
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
+                    .background(if (isDarkThemeMode(context = context)) Color.DarkGray else Color.White)
             ) {
 
-                NormalTextComponent(value = "Giriş")
-                HeadingTextComponent(value = "Tekrar hoşgeldiniz.")
+                NormalTextComponent(value = "Giriş", context = context)
+                HeadingTextComponent(value = "Tekrar hoşgeldiniz.", context = context)
                 Spacer(modifier = Modifier.height(20.dp))
 
-                MyTextFieldComponent(labelValue = "Email",
+                MyTextFieldComponent(
+                    labelValue = "Email",
                     painterResource(id = R.drawable.baseline_mail_outline_24),
                     onTextChanged = {
                         loginViewModel.onEvent(LoginEvent.EmailChanged(it), navController, context)
                     },
                     errorStatus = loginViewModel.loginState.value.emailError,
-                    screen = Screen.LoginScreen
+                    screen = Screen.LoginScreen,
+                    context = context
                 )
 
                 if (!loginViewModel.errorEmailText.isNullOrEmpty() && !loginViewModel.errorEmailText.isNullOrBlank() && loginViewModel.errorEmailText != "") {
@@ -81,9 +83,14 @@ fun LoginScreen(
                     labelValue = "Şifre",
                     painterResource(id = R.drawable.outline_lock_24),
                     onTextSelected = {
-                        loginViewModel.onEvent(LoginEvent.PasswordChanged(it), navController, context)
+                        loginViewModel.onEvent(
+                            LoginEvent.PasswordChanged(it),
+                            navController,
+                            context
+                        )
                     },
-                    errorStatus = loginViewModel.loginState.value.passwordError
+                    errorStatus = loginViewModel.loginState.value.passwordError,
+                    context = context
                 )
 
                 if (!loginViewModel.errorPasswordText.isNullOrEmpty() && !loginViewModel.errorPasswordText.isNullOrBlank() && loginViewModel.errorPasswordText != "") {
@@ -103,22 +110,30 @@ fun LoginScreen(
                 ButtonComponent(
                     value = "Giriş",
                     onButtonClicked = {
-                        loginViewModel.onEvent(LoginEvent.LoginButtonClicked, navController, context)
+                        loginViewModel.onEvent(
+                            LoginEvent.LoginButtonClicked,
+                            navController,
+                            context
+                        )
                     },
                     isEnabled = loginViewModel.allValidationsPassed.value
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                DividerTextComponent()
+                DividerTextComponent(context = context)
 
-                ClickableLoginTextComponent(tryingToLogin = false, onTextSelected = {
-                    navController.navigate(Screen.RegisterScreen.route)
-                })
+                ClickableLoginTextComponent(
+                    tryingToLogin = false,
+                    onTextSelected = {
+                        navController.navigate(Screen.RegisterScreen.route)
+                    },
+                    context = context
+                )
             }
         }
 
-        if(loginViewModel.loginInProgress.value) {
+        if (loginViewModel.loginInProgress.value) {
             CircularProgressIndicator()
         }
     }

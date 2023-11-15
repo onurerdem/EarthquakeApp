@@ -1,11 +1,11 @@
 package com.onurerdem.earthquakeapp.presentation.earthquakes.views
 
 import android.app.Activity
+import android.content.Context
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -59,13 +59,16 @@ import com.onurerdem.earthquakeapp.presentation.NavigationDrawerHeader
 import com.onurerdem.earthquakeapp.presentation.Screen
 import com.onurerdem.earthquakeapp.presentation.earthquakes.EarthquakesEvent
 import com.onurerdem.earthquakeapp.presentation.earthquakes.EarthquakesViewModel
+import com.onurerdem.earthquakeapp.presentation.isDarkThemeMode
+import com.onurerdem.earthquakeapp.presentation.saveThemeMode
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun EarthquakeScreen(
     navController: NavController,
-    viewModel: EarthquakesViewModel = hiltViewModel()
+    viewModel: EarthquakesViewModel = hiltViewModel(),
+    context: Context
 ) {
     val state = viewModel.state.value
 
@@ -83,6 +86,8 @@ fun EarthquakeScreen(
 
     val activity = (LocalContext.current as? Activity)
 
+    var darkTheme by remember { mutableStateOf(isDarkThemeMode(context = context)) }
+
     when {
         openExitAlertDialog.value -> {
             AlertDialogExample(
@@ -98,8 +103,9 @@ fun EarthquakeScreen(
                 confirmButtonText = "Evet",
                 dismissButtonText = "Hayır",
                 dismissButtonColor = Color.Red,
-                condirmButtonIcon = null,
-                dismissButtonIcon = null
+                confirmButtonIcon = null,
+                dismissButtonIcon = null,
+                context = context
             )
         }
 
@@ -117,8 +123,9 @@ fun EarthquakeScreen(
                 confirmButtonText = "Evet",
                 dismissButtonText = "Hayır",
                 dismissButtonColor = Color.Red,
-                condirmButtonIcon = null,
-                dismissButtonIcon = null
+                confirmButtonIcon = null,
+                dismissButtonIcon = null,
+                context = context
             )
         }
 
@@ -131,12 +138,13 @@ fun EarthquakeScreen(
                 dialogTitle = "Dil",
                 dialogText = "Kullanmak istediğiniz dili seçebilirsiniz.",
                 icon = Icons.Default.Language,
-                iconContentColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                iconContentColor = if (darkTheme) Color.White else Color.Black,
                 confirmButtonText = "English",
                 dismissButtonText = "Türkçe",
                 dismissButtonColor = Color.Blue,
-                condirmButtonIcon = null,
-                dismissButtonIcon = null
+                confirmButtonIcon = null,
+                dismissButtonIcon = null,
+                context = context
             )
         }
 
@@ -149,30 +157,48 @@ fun EarthquakeScreen(
                 dialogTitle = "Bildirim",
                 dialogText = "Bildirim almak istiyor musunuz?",
                 icon = Icons.Default.Notifications,
-                iconContentColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                iconContentColor = if (darkTheme) Color.White else Color.Black,
                 confirmButtonText = "Evet",
                 dismissButtonText = "Hayır",
                 dismissButtonColor = Color.Red,
-                condirmButtonIcon = null,
-                dismissButtonIcon = null
+                confirmButtonIcon = null,
+                dismissButtonIcon = null,
+                context = context
             )
         }
 
         openThemeAlertDialog.value -> {
             AlertDialogExample(
-                onDismissRequest = { openThemeAlertDialog.value = false },
+                onDismissRequest = {
+                    openThemeAlertDialog.value = false
+                    if (isDarkThemeMode(context = context)) {
+                        darkTheme = !darkTheme
+                        saveThemeMode(
+                            isDarkMode = !isDarkThemeMode(context = context),
+                            context = context
+                        )
+                    }
+                },
                 onConfirmation = {
                     openThemeAlertDialog.value = false
+                    if (!isDarkThemeMode(context = context)) {
+                        darkTheme = !darkTheme
+                        saveThemeMode(
+                            isDarkMode = !isDarkThemeMode(context = context),
+                            context = context
+                        )
+                    }
                 },
                 dialogTitle = "Uygulama Biçimi",
                 dialogText = "Kullanmak istediğiniz uygulama biçimini seçebilirsiniz.",
                 icon = Icons.Default.Lightbulb,
-                iconContentColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                iconContentColor = if (darkTheme) Color.White else Color.Black,
                 confirmButtonText = "Karanlık",
                 dismissButtonText = "Aydınlık",
                 dismissButtonColor = Color.Blue,
-                condirmButtonIcon = Icons.Default.DarkMode,
-                dismissButtonIcon = Icons.Default.LightMode
+                confirmButtonIcon = Icons.Default.DarkMode,
+                dismissButtonIcon = Icons.Default.LightMode,
+                context = context
             )
         }
 
@@ -185,12 +211,13 @@ fun EarthquakeScreen(
                 dialogTitle = "Tarih Biçimi",
                 dialogText = "Kullanmak istediğiniz tarih biçimini seçebilirsiniz.",
                 icon = Icons.Default.CalendarMonth,
-                iconContentColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                iconContentColor = if (darkTheme) Color.White else Color.Black,
                 confirmButtonText = "Gün-Ay-Yıl",
                 dismissButtonText = "Ay-Gün-Yıl",
                 dismissButtonColor = Color.Blue,
-                condirmButtonIcon = null,
-                dismissButtonIcon = null
+                confirmButtonIcon = null,
+                dismissButtonIcon = null,
+                context = context
             )
         }
     }
@@ -203,7 +230,8 @@ fun EarthquakeScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
-            AppToolbar(toolbarTitle = "Depremler",
+            AppToolbar(
+                toolbarTitle = "Depremler",
                 logoutButtonClicked = {
                     openLogoutAlertDialog.value = !openLogoutAlertDialog.value
                 },
@@ -211,12 +239,13 @@ fun EarthquakeScreen(
                     coroutineScope.launch {
                         scaffoldState.drawerState.open()
                     }
-                }
+                },
+                darkTheme = darkTheme
             )
         },
         drawerGesturesEnabled = scaffoldState.drawerState.isOpen,
         drawerContent = {
-            NavigationDrawerHeader(viewModel.emailId.value)
+            NavigationDrawerHeader(viewModel.emailId.value, darkTheme = darkTheme)
             NavigationDrawerBody(
                 navigationDrawerItems = viewModel.navigationItemsList,
                 onNavigationItemClicked = {
@@ -239,6 +268,14 @@ fun EarthquakeScreen(
                             openDateFormatAlertDialog.value = !openDateFormatAlertDialog.value
                         }
                     }
+                },
+                darkTheme = darkTheme,
+                onThemeUpdated = {
+                    darkTheme = !darkTheme
+                    saveThemeMode(
+                        isDarkMode = !isDarkThemeMode(context = context),
+                        context = context
+                    )
                 }
             )
         }
@@ -248,30 +285,36 @@ fun EarthquakeScreen(
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
+                .background(if (darkTheme) Color.DarkGray else Color.White)
                 .padding(paddingValues)
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
+                    .background(if (darkTheme) Color.DarkGray else Color.White)
                     .pullRefresh(pullRefreshState)
             ) {
                 Column {
-                    EarthquakeSearchBar(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(12.dp),
+                    EarthquakeSearchBar(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
                         hint = "Şehir vb. ara...",
                         onSearch = {
                             viewModel.onEvent(EarthquakesEvent.Search(it))
-                        }
+                        },
+                        darktheme = darkTheme
                     )
 
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
                         items(state.earthquakes) { earthquake ->
-                            EarthquakeListRow(earthquake = earthquake, onItemClick = {
-                                navController.navigate(Screen.EarthquakeDetailScreen.route + "/${earthquake.earthquake_id}")
-                            })
+                            EarthquakeListRow(
+                                earthquake = earthquake,
+                                onItemClick = {
+                                    navController.navigate(Screen.EarthquakeDetailScreen.route + "/${earthquake.earthquake_id}")
+                                },
+                                context = context
+                            )
                         }
                     }
                 }
@@ -294,7 +337,8 @@ fun EarthquakeScreen(
 fun EarthquakeSearchBar(
     modifier: Modifier,
     hint: String = "",
-    onSearch: (String) -> Unit = {}
+    onSearch: (String) -> Unit = {},
+    darktheme: Boolean
 ) {
     var text by remember {
         mutableStateOf("")
@@ -323,13 +367,13 @@ fun EarthquakeSearchBar(
             }),
             maxLines = 1,
             singleLine = true,
-            textStyle = TextStyle(color = if (isSystemInDarkTheme()) Color.White else Color.Black),
+            textStyle = TextStyle(color = if (darktheme) Color.White else Color.Black),
             shape = RoundedCornerShape(40.dp),
-            colors = TextFieldDefaults.textFieldColors(backgroundColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.White),
+            colors = TextFieldDefaults.textFieldColors(backgroundColor = if (darktheme) Color.DarkGray else Color.White),
             modifier = Modifier
                 .fillMaxWidth()
                 .shadow(4.dp, CircleShape)
-                .background(if (isSystemInDarkTheme()) Color.White else Color.Black, CircleShape)
+                .background(if (darktheme) Color.White else Color.Black, CircleShape)
                 .padding(4.dp)
                 .onFocusChanged {
                     isHintDisplayed = (!it.isFocused) && text.isEmpty()
@@ -342,7 +386,7 @@ fun EarthquakeSearchBar(
                     },
                     imageVector = Icons.Default.Search,
                     contentDescription = "Search icon.",
-                    tint = if (isSystemInDarkTheme()) Color.LightGray else Color.Gray
+                    tint = if (darktheme) Color.LightGray else Color.Gray
                 )
             },
             trailingIcon = {
@@ -354,7 +398,7 @@ fun EarthquakeSearchBar(
                     },
                     imageVector = Icons.Default.Close,
                     contentDescription = "Close icon.",
-                    tint = if (isSystemInDarkTheme()) Color.LightGray else Color.Gray
+                    tint = if (darktheme) Color.LightGray else Color.Gray
                 )
             }
         )
@@ -362,7 +406,7 @@ fun EarthquakeSearchBar(
         if (isHintDisplayed) {
             Text(
                 text = hint,
-                color = if (isSystemInDarkTheme()) Color.Gray else Color.LightGray,
+                color = if (darktheme) Color.Gray else Color.LightGray,
                 modifier = Modifier.padding(horizontal = 55.dp, vertical = 20.dp)
             )
         }

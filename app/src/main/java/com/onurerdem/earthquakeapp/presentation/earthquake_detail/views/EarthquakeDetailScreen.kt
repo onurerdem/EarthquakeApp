@@ -1,7 +1,7 @@
 package com.onurerdem.earthquakeapp.presentation.earthquake_detail.views
 
+import android.content.Context
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,13 +35,15 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import com.onurerdem.earthquakeapp.presentation.earthquake_detail.EarthquakeDetailViewModel
 import com.onurerdem.earthquakeapp.presentation.formatDateForTurkishLocale
+import com.onurerdem.earthquakeapp.presentation.isDarkThemeMode
 import kotlinx.coroutines.launch
 import java.util.Locale
 
 @OptIn(MapsComposeExperimentalApi::class)
 @Composable
 fun EarthquakeDetailScreen(
-    earthquakeDetailViewModel: EarthquakeDetailViewModel = hiltViewModel()
+    earthquakeDetailViewModel: EarthquakeDetailViewModel = hiltViewModel(),
+    context: Context
 ) {
     val state = earthquakeDetailViewModel.state.value
 
@@ -49,7 +51,7 @@ fun EarthquakeDetailScreen(
 
     Box(modifier = Modifier
         .fillMaxSize()
-        .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White),
+        .background(if (isDarkThemeMode(context = context)) Color.DarkGray else Color.White),
         contentAlignment = Alignment.Center
     ) {
         state.earthquake?.let {
@@ -61,7 +63,7 @@ fun EarthquakeDetailScreen(
                     text = "Depremin Konum Noktası:",
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(8.dp),
-                    color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                    color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
                     style = MaterialTheme.typography.subtitle1,
                     fontWeight = FontWeight.Bold
                 )
@@ -103,7 +105,7 @@ fun EarthquakeDetailScreen(
                         text = "Depremin Ayrıntıları:",
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
-                        color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                        color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
                         style = MaterialTheme.typography.subtitle1,
                         fontWeight = FontWeight.Bold
                     )
@@ -112,14 +114,14 @@ fun EarthquakeDetailScreen(
                         text = it.title,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
-                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
+                        color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
                     )
 
                     Text(
                         text = "Tarih: " + formatDateForTurkishLocale(date = it.date.substring(0, 10)) + "," + " Saat:" + it.date.substring(10, 19),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
-                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
+                        color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
                     )
 
                     Text(
@@ -130,28 +132,28 @@ fun EarthquakeDetailScreen(
                         },
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
-                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
+                        color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
                     )
 
                     Text(
                         text = "Deprem büyüklüğü: " + it.mag.toString(),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
-                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
+                        color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
                     )
 
                     Text(
                         text = "Deprem derinliği: " + it.depth.toString() + " km",
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
-                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
+                        color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
                     )
 
                     Text(
                         text = "Şehrin nüfusu: " + it.population.toString(),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
-                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
+                        color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
                     )
 
                     Column {
@@ -159,14 +161,14 @@ fun EarthquakeDetailScreen(
                             text = "Depreme Yakın Şehirler:",
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(8.dp),
-                            color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                            color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
                             style = MaterialTheme.typography.subtitle1,
                             fontWeight = FontWeight.Bold
                         )
 
                         LazyRow(modifier = Modifier.fillMaxWidth()) {
                             items(state.earthquake.closestCities) {closestCities ->
-                                EarthquakeDetailListRow(closestCity = closestCities)
+                                EarthquakeDetailListRow(closestCity = closestCities, context = context)
                             }
                         }
 
@@ -174,14 +176,14 @@ fun EarthquakeDetailScreen(
                             text = "Depreme Yakın Havalimanları:",
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(8.dp),
-                            color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                            color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
                             style = MaterialTheme.typography.subtitle1,
                             fontWeight = FontWeight.Bold
                         )
 
                         LazyRow(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
                             items(state.earthquake.airports) {airports ->
-                                EarthquakeDetailListRow(airports = airports)
+                                EarthquakeDetailListRow(airports = airports, context = context)
                             }
                         }
                     }

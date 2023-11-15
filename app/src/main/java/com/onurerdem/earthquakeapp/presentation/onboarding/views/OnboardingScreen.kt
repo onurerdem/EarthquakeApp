@@ -111,8 +111,9 @@ fun OnboardingScreen(
                 confirmButtonText = "Evet",
                 dismissButtonText = "Hayır",
                 dismissButtonColor = Color.Red,
-                condirmButtonIcon = null,
-                dismissButtonIcon = null
+                confirmButtonIcon = null,
+                dismissButtonIcon = null,
+                context = context
             )
         }
     }
@@ -251,8 +252,9 @@ fun ButtonsSection(
                 confirmButtonText = "Evet",
                 dismissButtonText = "Hayır",
                 dismissButtonColor = Color.Red,
-                condirmButtonIcon = null,
-                dismissButtonIcon = null
+                confirmButtonIcon = null,
+                dismissButtonIcon = null,
+                context = context
             )
         }
     }

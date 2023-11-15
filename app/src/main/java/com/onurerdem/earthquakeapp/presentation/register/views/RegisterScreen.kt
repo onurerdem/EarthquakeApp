@@ -3,7 +3,6 @@ package com.onurerdem.earthquakeapp.presentation.register.views
 import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -37,6 +36,7 @@ import com.onurerdem.earthquakeapp.presentation.MyTextFieldComponent
 import com.onurerdem.earthquakeapp.presentation.NormalTextComponent
 import com.onurerdem.earthquakeapp.presentation.PasswordTextFieldComponent
 import com.onurerdem.earthquakeapp.presentation.Screen
+import com.onurerdem.earthquakeapp.presentation.isDarkThemeMode
 import com.onurerdem.earthquakeapp.presentation.register.RegisterEvent
 import com.onurerdem.earthquakeapp.presentation.register.RegisterViewModel
 
@@ -45,7 +45,7 @@ fun RegisterScreen(
     navController: NavController,
     registerViewModel: RegisterViewModel = viewModel(),
     context: MainActivity
-    ) {
+) {
 
     val openAlertDialog = remember { mutableStateOf(false) }
 
@@ -66,8 +66,9 @@ fun RegisterScreen(
                 confirmButtonText = "Evet",
                 dismissButtonText = "Hayır",
                 dismissButtonColor = Color.Red,
-                condirmButtonIcon = null,
-                dismissButtonIcon = null
+                confirmButtonIcon = null,
+                dismissButtonIcon = null,
+                context = context
             )
         }
     }
@@ -80,28 +81,33 @@ fun RegisterScreen(
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
+                .background(if (isDarkThemeMode(context = context)) Color.DarkGray else Color.White)
                 .padding(28.dp)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
+                    .background(if (isDarkThemeMode(context = context)) Color.DarkGray else Color.White)
             ) {
 
-                NormalTextComponent(value = "Merhaba,")
-                HeadingTextComponent(value = "Kayıt ol.")
+                NormalTextComponent(value = "Merhaba,", context = context)
+                HeadingTextComponent(value = "Kayıt ol.", context = context)
                 Spacer(modifier = Modifier.height(20.dp))
 
                 MyTextFieldComponent(
                     labelValue = "Ad",
                     painterResource(id = R.drawable.baseline_person_outline_24),
                     onTextChanged = {
-                        registerViewModel.onEvent(RegisterEvent.FirstNameChanged(it), navController, context = context)
+                        registerViewModel.onEvent(
+                            RegisterEvent.FirstNameChanged(it),
+                            navController,
+                            context = context
+                        )
                     },
                     errorStatus = registerViewModel.registerState.value.firstNameError,
-                    screen = Screen.RegisterScreen
+                    screen = Screen.RegisterScreen,
+                    context = context
                 )
 
                 if (!registerViewModel.errorFirstNameText.isNullOrEmpty() && !registerViewModel.errorFirstNameText.isNullOrBlank() && registerViewModel.errorFirstNameText != "") {
@@ -112,10 +118,15 @@ fun RegisterScreen(
                     labelValue = "Soyad",
                     painterResource = painterResource(id = R.drawable.baseline_person_outline_24),
                     onTextChanged = {
-                        registerViewModel.onEvent(RegisterEvent.LastNameChanged(it), navController, context)
+                        registerViewModel.onEvent(
+                            RegisterEvent.LastNameChanged(it),
+                            navController,
+                            context
+                        )
                     },
                     errorStatus = registerViewModel.registerState.value.lastNameError,
-                    screen = Screen.RegisterScreen
+                    screen = Screen.RegisterScreen,
+                    context = context
                 )
 
                 if (!registerViewModel.errorLastNameText.isNullOrEmpty() && !registerViewModel.errorLastNameText.isNullOrBlank() && registerViewModel.errorLastNameText != "") {
@@ -126,10 +137,15 @@ fun RegisterScreen(
                     labelValue = "Email",
                     painterResource = painterResource(id = R.drawable.baseline_mail_outline_24),
                     onTextChanged = {
-                        registerViewModel.onEvent(RegisterEvent.EmailChanged(it), navController, context)
+                        registerViewModel.onEvent(
+                            RegisterEvent.EmailChanged(it),
+                            navController,
+                            context
+                        )
                     },
                     errorStatus = registerViewModel.registerState.value.emailError,
-                    screen = Screen.RegisterScreen
+                    screen = Screen.RegisterScreen,
+                    context = context
                 )
 
                 if (!registerViewModel.errorEmailText.isNullOrEmpty() && !registerViewModel.errorEmailText.isNullOrBlank() && registerViewModel.errorEmailText != "") {
@@ -140,9 +156,14 @@ fun RegisterScreen(
                     labelValue = "Şifre",
                     painterResource = painterResource(id = R.drawable.outline_lock_24),
                     onTextSelected = {
-                        registerViewModel.onEvent(RegisterEvent.PasswordChanged(it), navController, context)
+                        registerViewModel.onEvent(
+                            RegisterEvent.PasswordChanged(it),
+                            navController,
+                            context
+                        )
                     },
-                    errorStatus = registerViewModel.registerState.value.passwordError
+                    errorStatus = registerViewModel.registerState.value.passwordError,
+                    context = context
                 )
 
                 if (!registerViewModel.errorPasswordText.isNullOrEmpty() && !registerViewModel.errorPasswordText.isNullOrBlank() && registerViewModel.errorPasswordText != "") {
@@ -154,8 +175,13 @@ fun RegisterScreen(
                         navController.navigate(Screen.TermsAndConditionsScreen.route)
                     },
                     onCheckedChange = {
-                        registerViewModel.onEvent(RegisterEvent.PrivacyPolicyCheckBoxClicked(it), navController, context)
-                    }
+                        registerViewModel.onEvent(
+                            RegisterEvent.PrivacyPolicyCheckBoxClicked(it),
+                            navController,
+                            context
+                        )
+                    },
+                    context = context
                 )
 
                 if (!registerViewModel.errorPrivacyPolicyCheckBoxClickedText.isNullOrEmpty() && !registerViewModel.errorPrivacyPolicyCheckBoxClickedText.isNullOrBlank() && registerViewModel.errorPrivacyPolicyCheckBoxClickedText != "") {
@@ -167,25 +193,33 @@ fun RegisterScreen(
                 ButtonComponent(
                     value = "Kayıt ol",
                     onButtonClicked = {
-                        registerViewModel.onEvent(RegisterEvent.RegisterButtonClicked, navController, context)
+                        registerViewModel.onEvent(
+                            RegisterEvent.RegisterButtonClicked,
+                            navController,
+                            context
+                        )
                     },
                     isEnabled = registerViewModel.allValidationsPassed.value
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                DividerTextComponent()
+                DividerTextComponent(context = context)
 
-                ClickableLoginTextComponent(tryingToLogin = true, onTextSelected = {
-                    navController.navigate(Screen.LoginScreen.route)
-                })
+                ClickableLoginTextComponent(
+                    tryingToLogin = true,
+                    onTextSelected = {
+                        navController.navigate(Screen.LoginScreen.route)
+                    },
+                    context = context
+                )
             }
 
         }
 
-                if(registerViewModel.signUpInProgress.value) {
-                    CircularProgressIndicator()
-                }
+        if (registerViewModel.signUpInProgress.value) {
+            CircularProgressIndicator()
+        }
     }
 
     BackHandler {

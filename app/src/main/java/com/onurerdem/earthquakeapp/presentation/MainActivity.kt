@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(route = Screen.TermsAndConditionsScreen.route) {
-                            TermsAndConditionsScreen()
+                            TermsAndConditionsScreen(context = this@MainActivity)
                         }
 
                         composable(route = Screen.LoginScreen.route) {
@@ -59,11 +59,11 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(route = Screen.EarthquakeScreen.route) {
-                            EarthquakeScreen(navController = navController)
+                            EarthquakeScreen(navController = navController, context = this@MainActivity)
                         }
 
                         composable(route = Screen.EarthquakeDetailScreen.route + "/{${EARTHQUAKE_ID}}") {
-                            EarthquakeDetailScreen()
+                            EarthquakeDetailScreen(context = this@MainActivity)
                         }
                     }
                 }

@@ -1,6 +1,6 @@
 package com.onurerdem.earthquakeapp.presentation
 
-import androidx.compose.foundation.isSystemInDarkTheme
+import android.content.Context
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.AlertDialog
@@ -25,8 +25,9 @@ fun AlertDialogExample(
     confirmButtonText: String,
     dismissButtonText: String,
     dismissButtonColor: Color,
-    condirmButtonIcon: ImageVector?,
-    dismissButtonIcon: ImageVector?
+    confirmButtonIcon: ImageVector?,
+    dismissButtonIcon: ImageVector?,
+    context: Context
 ) {
     AlertDialog(
         icon = {
@@ -35,13 +36,15 @@ fun AlertDialogExample(
         title = {
             Text(
                 text = dialogTitle,
-                fontSize = 30.sp
+                fontSize = 30.sp,
+                color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
             )
         },
         text = {
             Text(
                 text = dialogText,
-                fontSize = 20.sp
+                fontSize = 20.sp,
+                color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
             )
         },
         onDismissRequest = {
@@ -53,11 +56,11 @@ fun AlertDialogExample(
                     onConfirmation()
                 }
             ) {
-                if (condirmButtonIcon != null) {
+                if (confirmButtonIcon != null) {
                     Icon(
-                        imageVector = condirmButtonIcon,
+                        imageVector = confirmButtonIcon,
                         contentDescription = "Simge",
-                        tint = if (isSystemInDarkTheme()) Color.White else Color.Black
+                        tint = if (isDarkThemeMode(context = context)) Color.White else Color.Black
                     )
                 }
 
@@ -80,7 +83,7 @@ fun AlertDialogExample(
                     Icon(
                         imageVector = dismissButtonIcon,
                         contentDescription = "Simge",
-                        tint = if (isSystemInDarkTheme()) Color.White else Color.Black
+                        tint = if (isDarkThemeMode(context = context)) Color.White else Color.Black
                     )
                 }
 
@@ -94,6 +97,6 @@ fun AlertDialogExample(
             }
         },
         iconContentColor = iconContentColor,
-        containerColor = if (isSystemInDarkTheme()) Color.Black else Color.White
+        containerColor = if (isDarkThemeMode(context = context)) Color.Black else Color.White
     )
 }

@@ -1,23 +1,32 @@
 package com.onurerdem.earthquakeapp.presentation
 
+import android.content.Context
 import android.util.Log
+import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Nightlight
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +39,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.SpanStyle
@@ -44,6 +54,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,10 +64,11 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.onurerdem.earthquakeapp.R
 import com.onurerdem.earthquakeapp.domain.model.NavigationItem
+import com.onurerdem.earthquakeapp.presentation.ui.theme.EarthquakeAppTheme
 import com.onurerdem.earthquakeapp.presentation.ui.theme.componentShapes
 
 @Composable
-fun NormalTextComponent(value: String) {
+fun NormalTextComponent(value: String, context: Context) {
     Text(
         text = value,
         modifier = Modifier
@@ -66,13 +78,13 @@ fun NormalTextComponent(value: String) {
             fontSize = 24.sp,
             fontWeight = FontWeight.Normal,
             fontStyle = FontStyle.Normal
-        ), color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+        ), color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
         textAlign = TextAlign.Center
     )
 }
 
 @Composable
-fun HeadingTextComponent(value: String) {
+fun HeadingTextComponent(value: String, context: Context) {
     Text(
         text = value,
         modifier = Modifier
@@ -82,7 +94,7 @@ fun HeadingTextComponent(value: String) {
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
             fontStyle = FontStyle.Normal
-        ), color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+        ), color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
         textAlign = TextAlign.Center
     )
 }
@@ -109,7 +121,8 @@ fun MyTextFieldComponent(
     labelValue: String, painterResource: Painter,
     onTextChanged: (String) -> Unit,
     errorStatus: Boolean = false,
-    screen: Screen
+    screen: Screen,
+    context: Context
 ) {
 
     val textValue = remember {
@@ -126,8 +139,8 @@ fun MyTextFieldComponent(
             focusedBorderColor = Color.Blue,
             focusedLabelColor = Color.Blue,
             cursorColor = Color.Blue,
-            backgroundColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.White,
-            textColor = if (isSystemInDarkTheme()) Color.White else Color.Black
+            backgroundColor = if (isDarkThemeMode(context = context)) Color.DarkGray else Color.White,
+            textColor = if (isDarkThemeMode(context = context)) Color.White else Color.Black
         ),
         keyboardOptions = if (screen == Screen.ForgotPasswordScreen) {
             KeyboardOptions(imeAction = ImeAction.Done)
@@ -159,7 +172,8 @@ fun MyTextFieldComponent(
 fun PasswordTextFieldComponent(
     labelValue: String, painterResource: Painter,
     onTextSelected: (String) -> Unit,
-    errorStatus: Boolean = false
+    errorStatus: Boolean = false,
+    context: Context
 ) {
 
     val localFocusManager = LocalFocusManager.current
@@ -180,8 +194,8 @@ fun PasswordTextFieldComponent(
             focusedBorderColor = Color.Blue,
             focusedLabelColor = Color.Blue,
             cursorColor = Color.Blue,
-            backgroundColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.White,
-            textColor = if (isSystemInDarkTheme()) Color.White else Color.Black
+            backgroundColor = if (isDarkThemeMode(context = context)) Color.DarkGray else Color.White,
+            textColor = if (isDarkThemeMode(context = context)) Color.White else Color.Black
         ),
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Password,
@@ -227,7 +241,8 @@ fun PasswordTextFieldComponent(
 @Composable
 fun CheckboxComponent(
     onTextSelected: (String) -> Unit,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit,
+    context: Context
 ) {
     Row(
         modifier = Modifier
@@ -246,31 +261,31 @@ fun CheckboxComponent(
                 onCheckedChange.invoke(it)
             })
 
-        ClickableTextComponent(onTextSelected)
+        ClickableTextComponent(onTextSelected, context = context)
     }
 }
 
 @Composable
-fun ClickableTextComponent(onTextSelected: (String) -> Unit) {
+fun ClickableTextComponent(onTextSelected: (String) -> Unit, context: Context) {
     val initialText = "Devam ederek şunları kabul etmiş olursunuz: "
     val privacyPolicyText = "Gizlilik Politikası"
     val andText = " ve "
     val termsAndConditionsText = "Kullanım koşulu"
 
     val annotatedString = buildAnnotatedString {
-        withStyle(style = SpanStyle(color = if (isSystemInDarkTheme()) Color.White else Color.Black)) {
+        withStyle(style = SpanStyle(color = if (isDarkThemeMode(context = context)) Color.White else Color.Black)) {
             pushStringAnnotation(tag = initialText, annotation = initialText)
             append(initialText)
         }
-        withStyle(style = SpanStyle(color = if (isSystemInDarkTheme()) Color.Cyan else Color.Blue)) {
+        withStyle(style = SpanStyle(color = if (isDarkThemeMode(context = context)) Color.Cyan else Color.Blue)) {
             pushStringAnnotation(tag = privacyPolicyText, annotation = privacyPolicyText)
             append(privacyPolicyText)
         }
-        withStyle(style = SpanStyle(color = if (isSystemInDarkTheme()) Color.White else Color.Black)) {
+        withStyle(style = SpanStyle(color = if (isDarkThemeMode(context = context)) Color.White else Color.Black)) {
             pushStringAnnotation(tag = andText, annotation = andText)
             append(andText)
         }
-        withStyle(style = SpanStyle(color = if (isSystemInDarkTheme()) Color.Cyan else Color.Blue)) {
+        withStyle(style = SpanStyle(color = if (isDarkThemeMode(context = context)) Color.Cyan else Color.Blue)) {
             pushStringAnnotation(tag = termsAndConditionsText, annotation = termsAndConditionsText)
             append(termsAndConditionsText)
         }
@@ -332,7 +347,7 @@ fun ButtonComponent(value: String, onButtonClicked: () -> Unit, isEnabled: Boole
 }
 
 @Composable
-fun DividerTextComponent() {
+fun DividerTextComponent(context: Context) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -350,7 +365,7 @@ fun DividerTextComponent() {
             modifier = Modifier.padding(8.dp),
             text = "Ya Da",
             fontSize = 18.sp,
-            color = if (isSystemInDarkTheme()) Color.White else Color.Black
+            color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
         )
         Divider(
             modifier = Modifier
@@ -364,17 +379,17 @@ fun DividerTextComponent() {
 
 
 @Composable
-fun ClickableLoginTextComponent(tryingToLogin: Boolean = true, onTextSelected: (String) -> Unit) {
+fun ClickableLoginTextComponent(tryingToLogin: Boolean = true, onTextSelected: (String) -> Unit, context: Context) {
     val initialText =
         if (tryingToLogin) "Zaten hesabınız var mı? " else "Henüz hesabınız yok mu? "
     val loginText = if (tryingToLogin) "Giriş" else "Kayıt Ol"
 
     val annotatedString = buildAnnotatedString {
-        withStyle(style = SpanStyle(color = if (isSystemInDarkTheme()) Color.White else Color.Black)) {
+        withStyle(style = SpanStyle(color = if (isDarkThemeMode(context = context)) Color.White else Color.Black)) {
             pushStringAnnotation(tag = initialText, annotation = initialText)
             append(initialText)
         }
-        withStyle(style = SpanStyle(color = if (isSystemInDarkTheme()) Color.Cyan else Color.Blue)) {
+        withStyle(style = SpanStyle(color = if (isDarkThemeMode(context = context)) Color.Cyan else Color.Blue)) {
             pushStringAnnotation(tag = loginText, annotation = loginText)
             append(loginText)
         }
@@ -444,10 +459,11 @@ fun ClickableUnderLinedTextComponent(value: String, onClick: () -> Unit) {
 @Composable
 fun AppToolbar(
     toolbarTitle: String, logoutButtonClicked: () -> Unit,
-    navigationIconClicked: () -> Unit
+    navigationIconClicked: () -> Unit,
+    darkTheme: Boolean
 ) {
     TopAppBar(
-        backgroundColor = if (isSystemInDarkTheme()) Color.Black else Color.Blue,
+        backgroundColor = if (darkTheme) Color.Black else Color.Blue,
         title = {
             Text(
                 text = toolbarTitle, color = Color.White
@@ -479,14 +495,14 @@ fun AppToolbar(
 }
 
 @Composable
-fun NavigationDrawerHeader(value: String?) {
+fun NavigationDrawerHeader(value: String?, darkTheme: Boolean) {
     Box(
         modifier = Modifier
             .background(
                 Brush.horizontalGradient(
                     listOf(
-                        if (isSystemInDarkTheme()) Color(0xFF1F1F20) else Color.Blue,
-                        if (isSystemInDarkTheme()) Color(0xFF23212E) else Color.Cyan
+                        if (darkTheme) Color(0xFF1F1F20) else Color.Blue,
+                        if (darkTheme) Color(0xFF23212E) else Color.Cyan
                     )
                 )
             )
@@ -515,7 +531,7 @@ fun NavigationDrawerHeader(value: String?) {
                     title = "E-Posta: ",
                     textUnit = 14.sp,
                     color = Color.White,
-                    shadowColor = if (isSystemInDarkTheme()) Color.Gray else Color.Black,
+                    shadowColor = if (darkTheme) Color.Gray else Color.Black,
                     fontStyle = FontStyle.Normal,
                     fontWeight = FontWeight.Bold
                 )
@@ -523,7 +539,7 @@ fun NavigationDrawerHeader(value: String?) {
                     title = value ?: "Uygulama Çekmecesi",
                     textUnit = 14.sp,
                     color = Color.White,
-                    shadowColor = if (isSystemInDarkTheme()) Color.Gray else Color.Black,
+                    shadowColor = if (darkTheme) Color.Gray else Color.Black,
                     fontStyle = FontStyle.Normal,
                     fontWeight = FontWeight.Normal
                 )
@@ -535,12 +551,14 @@ fun NavigationDrawerHeader(value: String?) {
 @Composable
 fun NavigationDrawerBody(
     navigationDrawerItems: List<NavigationItem>,
-    onNavigationItemClicked: (NavigationItem) -> Unit
+    onNavigationItemClicked: (NavigationItem) -> Unit,
+    darkTheme: Boolean = false,
+    onThemeUpdated: () -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
+            .background(if (darkTheme) Color.DarkGray else Color.White)
     ) {
         item {
             Row(
@@ -553,7 +571,7 @@ fun NavigationDrawerBody(
                 Icon(
                     imageVector = Icons.Default.Settings,
                     contentDescription = "Ayarlar",
-                    tint = if (isSystemInDarkTheme()) Color.White else Color.Black
+                    tint = if (darkTheme) Color.White else Color.Black
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
@@ -561,8 +579,8 @@ fun NavigationDrawerBody(
                 NavigationDrawerText(
                     title = "AYARLAR",
                     textUnit = 24.sp,
-                    color = if (isSystemInDarkTheme()) Color.White else Color.Black,
-                    shadowColor = if (isSystemInDarkTheme()) Color.Gray else Color.LightGray,
+                    color = if (darkTheme) Color.White else Color.Black,
+                    shadowColor = if (darkTheme) Color.Gray else Color.LightGray,
                     fontStyle = FontStyle.Normal,
                     fontWeight = FontWeight.ExtraBold
                 )
@@ -570,7 +588,32 @@ fun NavigationDrawerBody(
         }
 
         items(navigationDrawerItems) {
-            NavigationItemRow(item = it, onNavigationItemClicked)
+            Row {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                ) {
+                    NavigationItemRow(item = it, onNavigationItemClicked, darkTheme)
+
+                    if (it.itemId == "themeSetting") {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .align(Alignment.CenterEnd)
+                                .padding(end = 16.dp)
+                        ) {
+                            EarthquakeAppTheme(darkTheme = darkTheme) {
+                                ThemeSwitcher(
+                                    darkTheme = darkTheme,
+                                    size = 36.dp,
+                                    padding = 5.dp,
+                                    onClick = onThemeUpdated
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -578,7 +621,8 @@ fun NavigationDrawerBody(
 @Composable
 fun NavigationItemRow(
     item: NavigationItem,
-    onNavigationItemClicked: (NavigationItem) -> Unit
+    onNavigationItemClicked: (NavigationItem) -> Unit,
+    darkTheme: Boolean
 ) {
     Row(
         modifier = Modifier
@@ -591,7 +635,7 @@ fun NavigationItemRow(
         Icon(
             imageVector = item.icon,
             contentDescription = item.description,
-            tint = if (isSystemInDarkTheme()) Color.White else Color.Black
+            tint = if (darkTheme) Color.White else Color.Black
         )
 
         Spacer(modifier = Modifier.width(16.dp))
@@ -599,8 +643,8 @@ fun NavigationItemRow(
         NavigationDrawerText(
             title = item.title,
             textUnit = 18.sp,
-            color = if (isSystemInDarkTheme()) Color.White else Color.Black,
-            shadowColor = if (isSystemInDarkTheme()) Color.Gray else Color.LightGray,
+            color = if (darkTheme) Color.White else Color.Black,
+            shadowColor = if (darkTheme) Color.Gray else Color.LightGray,
             fontStyle = FontStyle.Normal,
             fontWeight = FontWeight.Bold
         )
@@ -631,4 +675,86 @@ fun NavigationDrawerText(
             )
         )
     )
+}
+
+@Composable
+fun ThemeSwitcher(
+    darkTheme: Boolean = false,
+    size: Dp = 150.dp,
+    iconSize: Dp = size / 3,
+    padding: Dp = 10.dp,
+    borderWidth: Dp = 1.dp,
+    parentShape: Shape = CircleShape,
+    toggleShape: Shape = CircleShape,
+    animationSpec: AnimationSpec<Dp> = tween(durationMillis = 300),
+    onClick: () -> Unit
+) {
+    val offset by animateDpAsState(
+        targetValue = if (darkTheme) 0.dp else size,
+        animationSpec = animationSpec
+    )
+
+    Box(modifier = Modifier
+        .width(size * 2)
+        .height(size)
+        .clip(shape = parentShape)
+        .clickable { onClick() }
+        .background(MaterialTheme.colorScheme.secondaryContainer)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(size)
+                .offset(x = offset)
+                .padding(all = padding)
+                .clip(shape = toggleShape)
+                .background(MaterialTheme.colorScheme.primary)
+        ) {}
+        Row(
+            modifier = Modifier
+                .border(
+                    border = BorderStroke(
+                        width = borderWidth,
+                        color = MaterialTheme.colorScheme.primary
+                    ),
+                    shape = parentShape
+                )
+        ) {
+            Box(
+                modifier = Modifier.size(size),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    modifier = Modifier.size(iconSize),
+                    imageVector = Icons.Default.Nightlight,
+                    contentDescription = "Theme Icon",
+                    tint = if (darkTheme) MaterialTheme.colorScheme.secondaryContainer
+                    else MaterialTheme.colorScheme.primary
+                )
+            }
+            Box(
+                modifier = Modifier.size(size),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    modifier = Modifier.size(iconSize),
+                    imageVector = Icons.Default.LightMode,
+                    contentDescription = "Theme Icon",
+                    tint = if (darkTheme) MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.secondaryContainer
+                )
+            }
+        }
+    }
+}
+
+fun saveThemeMode(isDarkMode: Boolean, context: Context) {
+    val sharedPreferences = context.getSharedPreferences("ThemePreferences", Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
+    editor.putBoolean("isDarkMode", isDarkMode)
+    editor.apply()
+}
+
+fun isDarkThemeMode(context: Context): Boolean {
+    val sharedPreferences = context.getSharedPreferences("ThemePreferences", Context.MODE_PRIVATE)
+    return sharedPreferences.getBoolean("isDarkMode", false)
 }

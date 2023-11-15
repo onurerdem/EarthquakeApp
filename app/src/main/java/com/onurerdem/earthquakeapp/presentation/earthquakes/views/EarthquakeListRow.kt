@@ -1,8 +1,8 @@
 package com.onurerdem.earthquakeapp.presentation.earthquakes.views
 
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,11 +21,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.onurerdem.earthquakeapp.domain.model.Earthquake
 import com.onurerdem.earthquakeapp.presentation.formatDateForTurkishLocale
+import com.onurerdem.earthquakeapp.presentation.isDarkThemeMode
 
 @Composable
 fun EarthquakeListRow(
     earthquake: Earthquake,
-    onItemClick: (Earthquake) -> Unit
+    onItemClick: (Earthquake) -> Unit,
+    context: Context
 ) {
     Row(
         modifier = Modifier
@@ -42,7 +44,7 @@ fun EarthquakeListRow(
             Text(earthquake.title,
                 style = MaterialTheme.typography.subtitle1,
                 overflow = TextOverflow.Ellipsis,
-                color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.fillMaxWidth(.6f).horizontalScroll(rememberScrollState())
                 )
@@ -50,7 +52,7 @@ fun EarthquakeListRow(
             Text("Tarih: " + formatDateForTurkishLocale(date = earthquake.date.substring(0, 10)) + "," + " Saat:" + earthquake.date.substring(10, 19),
                 style = MaterialTheme.typography.subtitle2,
                 overflow = TextOverflow.Ellipsis,
-                color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.fillMaxWidth(.6f).horizontalScroll(rememberScrollState())
             )
@@ -62,14 +64,14 @@ fun EarthquakeListRow(
             Text("Büyüklük: " + earthquake.mag.toString(),
                 style = MaterialTheme.typography.body1,
                 overflow = TextOverflow.Ellipsis,
-                color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
                 textAlign = TextAlign.End
             )
 
             Text("Derinlik: " + earthquake.depth.toString() + " km",
                 style = MaterialTheme.typography.body2,
                 overflow = TextOverflow.Ellipsis,
-                color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
                 textAlign = TextAlign.End
             )
         }

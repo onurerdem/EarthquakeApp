@@ -1,7 +1,7 @@
 package com.onurerdem.earthquakeapp.presentation.register.views
 
+import android.content.Context
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,9 +20,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.onurerdem.earthquakeapp.presentation.HeadingTextComponent
+import com.onurerdem.earthquakeapp.presentation.MainActivity
+import com.onurerdem.earthquakeapp.presentation.isDarkThemeMode
 
 @Composable
-fun TermsAndConditionsScreen() {
+fun TermsAndConditionsScreen(context: Context) {
     val privicyPolicy = "Privacy Policy\n" +
             "\n" +
             "Onur Erdem built the Earthquake App app as a Free app. This SERVICE is provided by Onur Erdem at no cost and is intended for use as is.\n" +
@@ -88,16 +90,16 @@ fun TermsAndConditionsScreen() {
 
     Surface(modifier = Modifier
         .fillMaxSize()
-        .background(color = if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
+        .background(color = if (isDarkThemeMode(context = context)) Color.DarkGray else Color.White)
         .padding(16.dp)) {
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
+                .background(color = if (isDarkThemeMode(context = context)) Color.DarkGray else Color.White)
                 .verticalScroll(rememberScrollState())
         ) {
-            HeadingTextComponent(value = "Kullanım koşulu")
+            HeadingTextComponent(value = "Kullanım koşulu", context = context)
 
             Text(
                 text = privicyPolicy,
@@ -107,7 +109,7 @@ fun TermsAndConditionsScreen() {
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Normal,
                     fontStyle = FontStyle.Normal
-                ), color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                ), color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
                 textAlign = TextAlign.Start
             )
         }
@@ -118,5 +120,5 @@ fun TermsAndConditionsScreen() {
 @Preview
 @Composable
 fun TermsAndConditionsScreenPreview(){
-    TermsAndConditionsScreen()
+    TermsAndConditionsScreen(context = MainActivity())
 }
