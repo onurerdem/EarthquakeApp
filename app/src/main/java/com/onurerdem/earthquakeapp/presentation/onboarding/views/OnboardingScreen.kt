@@ -107,7 +107,12 @@ fun OnboardingScreen(
                 dialogTitle = "Çıkış",
                 dialogText = "Çıkmak istediğinize emin misiniz?",
                 icon = Icons.Default.ExitToApp,
-                iconContentColor = Color.Red
+                iconContentColor = Color.Red,
+                confirmButtonText = "Evet",
+                dismissButtonText = "Hayır",
+                dismissButtonColor = Color.Red,
+                condirmButtonIcon = null,
+                dismissButtonIcon = null
             )
         }
     }
@@ -242,7 +247,12 @@ fun ButtonsSection(
                 dialogTitle = "Uyarı",
                 dialogText = "Başlamak istediğinize emin misiniz?",
                 icon = Icons.Default.Warning,
-                iconContentColor = Color.Red
+                iconContentColor = Color.Red,
+                confirmButtonText = "Evet",
+                dismissButtonText = "Hayır",
+                dismissButtonColor = Color.Red,
+                condirmButtonIcon = null,
+                dismissButtonIcon = null
             )
         }
     }

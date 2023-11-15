@@ -2,25 +2,34 @@ package com.onurerdem.earthquakeapp.presentation
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.SpanStyle
@@ -35,8 +44,15 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.onurerdem.earthquakeapp.R
+import com.onurerdem.earthquakeapp.domain.model.NavigationItem
 import com.onurerdem.earthquakeapp.presentation.ui.theme.componentShapes
 
 @Composable
@@ -422,5 +438,197 @@ fun ClickableUnderLinedTextComponent(value: String, onClick: () -> Unit) {
                 }
 
         }
+    )
+}
+
+@Composable
+fun AppToolbar(
+    toolbarTitle: String, logoutButtonClicked: () -> Unit,
+    navigationIconClicked: () -> Unit
+) {
+    TopAppBar(
+        backgroundColor = if (isSystemInDarkTheme()) Color.Black else Color.Blue,
+        title = {
+            Text(
+                text = toolbarTitle, color = Color.White
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = {
+                navigationIconClicked.invoke()
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.Menu,
+                    contentDescription = "Menü",
+                    tint = Color.White
+                )
+            }
+        },
+        actions = {
+            IconButton(onClick = {
+                logoutButtonClicked.invoke()
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.Logout,
+                    contentDescription = "Çıkış Yap",
+                    tint = Color.White
+                )
+            }
+        }
+    )
+}
+
+@Composable
+fun NavigationDrawerHeader(value: String?) {
+    Box(
+        modifier = Modifier
+            .background(
+                Brush.horizontalGradient(
+                    listOf(
+                        if (isSystemInDarkTheme()) Color(0xFF1F1F20) else Color.Blue,
+                        if (isSystemInDarkTheme()) Color(0xFF23212E) else Color.Cyan
+                    )
+                )
+            )
+            .fillMaxWidth()
+            .fillMaxHeight(0.23f)
+            .padding(8.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.profile_animation))
+
+            LottieAnimation(
+                composition = composition,
+                iterations = LottieConstants.IterateForever,
+                modifier = Modifier.fillMaxSize(0.7f),
+                alignment = Alignment.TopCenter
+            )
+
+            Spacer(modifier = Modifier.heightIn(12.dp))
+
+            Row {
+                NavigationDrawerText(
+                    title = "E-Posta: ",
+                    textUnit = 14.sp,
+                    color = Color.White,
+                    shadowColor = if (isSystemInDarkTheme()) Color.Gray else Color.Black,
+                    fontStyle = FontStyle.Normal,
+                    fontWeight = FontWeight.Bold
+                )
+                NavigationDrawerText(
+                    title = value ?: "Uygulama Çekmecesi",
+                    textUnit = 14.sp,
+                    color = Color.White,
+                    shadowColor = if (isSystemInDarkTheme()) Color.Gray else Color.Black,
+                    fontStyle = FontStyle.Normal,
+                    fontWeight = FontWeight.Normal
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun NavigationDrawerBody(
+    navigationDrawerItems: List<NavigationItem>,
+    onNavigationItemClicked: (NavigationItem) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
+    ) {
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(all = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = "Ayarlar",
+                    tint = if (isSystemInDarkTheme()) Color.White else Color.Black
+                )
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                NavigationDrawerText(
+                    title = "AYARLAR",
+                    textUnit = 24.sp,
+                    color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                    shadowColor = if (isSystemInDarkTheme()) Color.Gray else Color.LightGray,
+                    fontStyle = FontStyle.Normal,
+                    fontWeight = FontWeight.ExtraBold
+                )
+            }
+        }
+
+        items(navigationDrawerItems) {
+            NavigationItemRow(item = it, onNavigationItemClicked)
+        }
+    }
+}
+
+@Composable
+fun NavigationItemRow(
+    item: NavigationItem,
+    onNavigationItemClicked: (NavigationItem) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onNavigationItemClicked.invoke(item)
+            }
+            .padding(all = 16.dp)
+    ) {
+        Icon(
+            imageVector = item.icon,
+            contentDescription = item.description,
+            tint = if (isSystemInDarkTheme()) Color.White else Color.Black
+        )
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        NavigationDrawerText(
+            title = item.title,
+            textUnit = 18.sp,
+            color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+            shadowColor = if (isSystemInDarkTheme()) Color.Gray else Color.LightGray,
+            fontStyle = FontStyle.Normal,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
+fun NavigationDrawerText(
+    title: String,
+    textUnit: TextUnit,
+    color: Color,
+    shadowColor: Color,
+    fontStyle: FontStyle,
+    fontWeight: FontWeight
+) {
+    val shadowOffset = Offset(4f, 6f)
+
+    Text(
+        text = title,
+        style = TextStyle(
+            color = color,
+            fontSize = textUnit,
+            fontStyle = fontStyle,
+            fontWeight = fontWeight,
+            shadow = Shadow(
+                color = shadowColor,
+                offset = shadowOffset, 2f
+            )
+        )
     )
 }

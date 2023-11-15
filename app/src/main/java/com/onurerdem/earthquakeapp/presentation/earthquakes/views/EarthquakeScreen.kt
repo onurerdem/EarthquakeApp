@@ -1,6 +1,7 @@
 package com.onurerdem.earthquakeapp.presentation.earthquakes.views
 
 import android.app.Activity
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,15 +18,25 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Lightbulb
+import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -42,9 +53,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.onurerdem.earthquakeapp.presentation.AlertDialogExample
+import com.onurerdem.earthquakeapp.presentation.AppToolbar
+import com.onurerdem.earthquakeapp.presentation.NavigationDrawerBody
+import com.onurerdem.earthquakeapp.presentation.NavigationDrawerHeader
 import com.onurerdem.earthquakeapp.presentation.Screen
 import com.onurerdem.earthquakeapp.presentation.earthquakes.EarthquakesEvent
 import com.onurerdem.earthquakeapp.presentation.earthquakes.EarthquakesViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -56,62 +71,222 @@ fun EarthquakeScreen(
 
     val isRefreshing by viewModel.isRefreshing.collectAsState()
 
-    val pullRefreshState = rememberPullRefreshState(isRefreshing, { viewModel.onEvent(EarthquakesEvent.Search("")) })
+    val pullRefreshState =
+        rememberPullRefreshState(isRefreshing, { viewModel.onEvent(EarthquakesEvent.Search("")) })
 
-    val openAlertDialog = remember { mutableStateOf(false) }
+    val openExitAlertDialog = remember { mutableStateOf(false) }
+    val openLogoutAlertDialog = remember { mutableStateOf(false) }
+    val openLanguageAlertDialog = remember { mutableStateOf(false) }
+    val openNotificationAlertDialog = remember { mutableStateOf(false) }
+    val openThemeAlertDialog = remember { mutableStateOf(false) }
+    val openDateFormatAlertDialog = remember { mutableStateOf(false) }
 
     val activity = (LocalContext.current as? Activity)
 
     when {
-        openAlertDialog.value -> {
+        openExitAlertDialog.value -> {
             AlertDialogExample(
-                onDismissRequest = { openAlertDialog.value = false },
+                onDismissRequest = { openExitAlertDialog.value = false },
                 onConfirmation = {
-                    openAlertDialog.value = false
+                    openExitAlertDialog.value = false
                     activity?.finish()
                 },
                 dialogTitle = "Çıkış",
                 dialogText = "Çıkmak istediğinize emin misiniz?",
                 icon = Icons.Default.ExitToApp,
-                iconContentColor = Color.Red
+                iconContentColor = Color.Red,
+                confirmButtonText = "Evet",
+                dismissButtonText = "Hayır",
+                dismissButtonColor = Color.Red,
+                condirmButtonIcon = null,
+                dismissButtonIcon = null
+            )
+        }
+
+        openLogoutAlertDialog.value -> {
+            AlertDialogExample(
+                onDismissRequest = { openLogoutAlertDialog.value = false },
+                onConfirmation = {
+                    openLogoutAlertDialog.value = false
+                    viewModel.logout(navController)
+                },
+                dialogTitle = "Çıkış",
+                dialogText = "Oturumunuzu kapatmak istediğinize emin misiniz?",
+                icon = Icons.Default.Logout,
+                iconContentColor = Color.Red,
+                confirmButtonText = "Evet",
+                dismissButtonText = "Hayır",
+                dismissButtonColor = Color.Red,
+                condirmButtonIcon = null,
+                dismissButtonIcon = null
+            )
+        }
+
+        openLanguageAlertDialog.value -> {
+            AlertDialogExample(
+                onDismissRequest = { openLanguageAlertDialog.value = false },
+                onConfirmation = {
+                    openLanguageAlertDialog.value = false
+                },
+                dialogTitle = "Dil",
+                dialogText = "Kullanmak istediğiniz dili seçebilirsiniz.",
+                icon = Icons.Default.Language,
+                iconContentColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                confirmButtonText = "English",
+                dismissButtonText = "Türkçe",
+                dismissButtonColor = Color.Blue,
+                condirmButtonIcon = null,
+                dismissButtonIcon = null
+            )
+        }
+
+        openNotificationAlertDialog.value -> {
+            AlertDialogExample(
+                onDismissRequest = { openNotificationAlertDialog.value = false },
+                onConfirmation = {
+                    openNotificationAlertDialog.value = false
+                },
+                dialogTitle = "Bildirim",
+                dialogText = "Bildirim almak istiyor musunuz?",
+                icon = Icons.Default.Notifications,
+                iconContentColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                confirmButtonText = "Evet",
+                dismissButtonText = "Hayır",
+                dismissButtonColor = Color.Red,
+                condirmButtonIcon = null,
+                dismissButtonIcon = null
+            )
+        }
+
+        openThemeAlertDialog.value -> {
+            AlertDialogExample(
+                onDismissRequest = { openThemeAlertDialog.value = false },
+                onConfirmation = {
+                    openThemeAlertDialog.value = false
+                },
+                dialogTitle = "Uygulama Biçimi",
+                dialogText = "Kullanmak istediğiniz uygulama biçimini seçebilirsiniz.",
+                icon = Icons.Default.Lightbulb,
+                iconContentColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                confirmButtonText = "Karanlık",
+                dismissButtonText = "Aydınlık",
+                dismissButtonColor = Color.Blue,
+                condirmButtonIcon = Icons.Default.DarkMode,
+                dismissButtonIcon = Icons.Default.LightMode
+            )
+        }
+
+        openDateFormatAlertDialog.value -> {
+            AlertDialogExample(
+                onDismissRequest = { openDateFormatAlertDialog.value = false },
+                onConfirmation = {
+                    openDateFormatAlertDialog.value = false
+                },
+                dialogTitle = "Tarih Biçimi",
+                dialogText = "Kullanmak istediğiniz tarih biçimini seçebilirsiniz.",
+                icon = Icons.Default.CalendarMonth,
+                iconContentColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                confirmButtonText = "Gün-Ay-Yıl",
+                dismissButtonText = "Ay-Gün-Yıl",
+                dismissButtonColor = Color.Blue,
+                condirmButtonIcon = null,
+                dismissButtonIcon = null
             )
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
-            .pullRefresh(pullRefreshState)
-    ) {
-        Column {
-            EarthquakeSearchBar(modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-                hint = "Şehir vb. ara...",
-                onSearch = {
-                    viewModel.onEvent(EarthquakesEvent.Search(it))
+    val scaffoldState = rememberScaffoldState()
+    val coroutineScope = rememberCoroutineScope()
+
+    viewModel.getUserData()
+
+    Scaffold(
+        scaffoldState = scaffoldState,
+        topBar = {
+            AppToolbar(toolbarTitle = "Depremler",
+                logoutButtonClicked = {
+                    openLogoutAlertDialog.value = !openLogoutAlertDialog.value
+                },
+                navigationIconClicked = {
+                    coroutineScope.launch {
+                        scaffoldState.drawerState.open()
+                    }
                 }
             )
+        },
+        drawerGesturesEnabled = scaffoldState.drawerState.isOpen,
+        drawerContent = {
+            NavigationDrawerHeader(viewModel.emailId.value)
+            NavigationDrawerBody(
+                navigationDrawerItems = viewModel.navigationItemsList,
+                onNavigationItemClicked = {
+                    Log.d("ComingHere", "inside_NavigationItemClicked")
+                    Log.d("ComingHere", "${it.itemId} ${it.title}")
+                    when {
+                        it.itemId == "languageSetting" -> {
+                            openLanguageAlertDialog.value = !openLanguageAlertDialog.value
+                        }
 
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(state.earthquakes) { earthquake ->
-                    EarthquakeListRow(earthquake = earthquake, onItemClick = {
-                        navController.navigate(Screen.EarthquakeDetailScreen.route + "/${earthquake.earthquake_id}")
-                    })
+                        it.itemId == "notificationSetting" -> {
+                            openNotificationAlertDialog.value = !openNotificationAlertDialog.value
+                        }
+
+                        it.itemId == "themeSetting" -> {
+                            openThemeAlertDialog.value = !openThemeAlertDialog.value
+                        }
+
+                        it.itemId == "dateFormatSetting" -> {
+                            openDateFormatAlertDialog.value = !openDateFormatAlertDialog.value
+                        }
+                    }
                 }
-            }
+            )
         }
 
-        PullRefreshIndicator(
-            refreshing = isRefreshing,
-            state = pullRefreshState,
-            modifier = Modifier.align(Alignment.TopCenter)
-        )
+    ) { paddingValues ->
+
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
+                .padding(paddingValues)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
+                    .pullRefresh(pullRefreshState)
+            ) {
+                Column {
+                    EarthquakeSearchBar(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                        hint = "Şehir vb. ara...",
+                        onSearch = {
+                            viewModel.onEvent(EarthquakesEvent.Search(it))
+                        }
+                    )
+
+                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                        items(state.earthquakes) { earthquake ->
+                            EarthquakeListRow(earthquake = earthquake, onItemClick = {
+                                navController.navigate(Screen.EarthquakeDetailScreen.route + "/${earthquake.earthquake_id}")
+                            })
+                        }
+                    }
+                }
+
+                PullRefreshIndicator(
+                    refreshing = isRefreshing,
+                    state = pullRefreshState,
+                    modifier = Modifier.align(Alignment.TopCenter)
+                )
+            }
+        }
     }
 
     BackHandler {
-        openAlertDialog.value = !openAlertDialog.value
+        openExitAlertDialog.value = !openExitAlertDialog.value
     }
 }
 
