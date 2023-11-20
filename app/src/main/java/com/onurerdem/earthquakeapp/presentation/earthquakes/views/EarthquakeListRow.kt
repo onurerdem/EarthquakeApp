@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.onurerdem.earthquakeapp.domain.model.Earthquake
+import com.onurerdem.earthquakeapp.presentation.SharedPreferencesManager
 import com.onurerdem.earthquakeapp.presentation.formatDateForTurkishLocale
 import com.onurerdem.earthquakeapp.presentation.isDarkThemeMode
 
@@ -49,7 +50,7 @@ fun EarthquakeListRow(
                 modifier = Modifier.fillMaxWidth(.6f).horizontalScroll(rememberScrollState())
                 )
 
-            Text("Tarih: " + formatDateForTurkishLocale(date = earthquake.date.substring(0, 10)) + "," + " Saat:" + earthquake.date.substring(10, 19),
+            Text("Tarih: " + formatDateForTurkishLocale(date = earthquake.date.substring(0, 10), sharedPreferencesManager = SharedPreferencesManager(context = context)) + "," + " Saat:" + earthquake.date.substring(10, 19),
                 style = MaterialTheme.typography.subtitle2,
                 overflow = TextOverflow.Ellipsis,
                 color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,

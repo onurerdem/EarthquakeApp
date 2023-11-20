@@ -57,6 +57,7 @@ import com.onurerdem.earthquakeapp.presentation.AppToolbar
 import com.onurerdem.earthquakeapp.presentation.NavigationDrawerBody
 import com.onurerdem.earthquakeapp.presentation.NavigationDrawerHeader
 import com.onurerdem.earthquakeapp.presentation.Screen
+import com.onurerdem.earthquakeapp.presentation.SharedPreferencesManager
 import com.onurerdem.earthquakeapp.presentation.earthquakes.EarthquakesEvent
 import com.onurerdem.earthquakeapp.presentation.earthquakes.EarthquakesViewModel
 import com.onurerdem.earthquakeapp.presentation.isDarkThemeMode
@@ -68,7 +69,8 @@ import kotlinx.coroutines.launch
 fun EarthquakeScreen(
     navController: NavController,
     viewModel: EarthquakesViewModel = hiltViewModel(),
-    context: Context
+    context: Context,
+    sharedPreferencesManager: SharedPreferencesManager
 ) {
     val state = viewModel.state.value
 
@@ -87,6 +89,8 @@ fun EarthquakeScreen(
     val activity = (LocalContext.current as? Activity)
 
     var darkTheme by remember { mutableStateOf(isDarkThemeMode(context = context)) }
+
+    var isDMYorN by remember { mutableStateOf(sharedPreferencesManager.getDMYorN()) }
 
     when {
         openExitAlertDialog.value -> {
@@ -204,9 +208,21 @@ fun EarthquakeScreen(
 
         openDateFormatAlertDialog.value -> {
             AlertDialogExample(
-                onDismissRequest = { openDateFormatAlertDialog.value = false },
+                onDismissRequest = {
+                    openDateFormatAlertDialog.value = false
+                    if (sharedPreferencesManager.getDateFormat() == "dd.MM.yyyy" || sharedPreferencesManager.getDateFormat() == null) {
+                        isDMYorN = !isDMYorN
+                        sharedPreferencesManager.saveDMYorN(isDMYorN = !sharedPreferencesManager.getDMYorN())
+                        sharedPreferencesManager.saveDateFormat("MM.dd.yyyy")
+                    }
+                },
                 onConfirmation = {
                     openDateFormatAlertDialog.value = false
+                    if (sharedPreferencesManager.getDateFormat() == "MM.dd.yyyy") {
+                        isDMYorN = !isDMYorN
+                        sharedPreferencesManager.saveDMYorN(isDMYorN = !sharedPreferencesManager.getDMYorN())
+                        sharedPreferencesManager.saveDateFormat("dd.MM.yyyy")
+                    }
                 },
                 dialogTitle = "Tarih Biçimi",
                 dialogText = "Kullanmak istediğiniz tarih biçimini seçebilirsiniz.",
@@ -276,7 +292,19 @@ fun EarthquakeScreen(
                         isDarkMode = !isDarkThemeMode(context = context),
                         context = context
                     )
-                }
+                },
+                onDateFormatUpdated = {
+                    if (sharedPreferencesManager.getDateFormat() == "dd.MM.yyyy" || sharedPreferencesManager.getDateFormat() == null) {
+                        isDMYorN = !isDMYorN
+                        sharedPreferencesManager.saveDMYorN(isDMYorN = !sharedPreferencesManager.getDMYorN())
+                        sharedPreferencesManager.saveDateFormat("MM.dd.yyyy")
+                    } else {
+                        isDMYorN = !isDMYorN
+                        sharedPreferencesManager.saveDMYorN(isDMYorN = !sharedPreferencesManager.getDMYorN())
+                        sharedPreferencesManager.saveDateFormat("dd.MM.yyyy")
+                    }
+                },
+                isDMYorN = isDMYorN
             )
         }
 

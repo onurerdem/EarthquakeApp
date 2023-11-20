@@ -33,6 +33,7 @@ import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.MarkerInfoWindow
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
+import com.onurerdem.earthquakeapp.presentation.SharedPreferencesManager
 import com.onurerdem.earthquakeapp.presentation.earthquake_detail.EarthquakeDetailViewModel
 import com.onurerdem.earthquakeapp.presentation.formatDateForTurkishLocale
 import com.onurerdem.earthquakeapp.presentation.isDarkThemeMode
@@ -118,7 +119,7 @@ fun EarthquakeDetailScreen(
                     )
 
                     Text(
-                        text = "Tarih: " + formatDateForTurkishLocale(date = it.date.substring(0, 10)) + "," + " Saat:" + it.date.substring(10, 19),
+                        text = "Tarih: " + formatDateForTurkishLocale(date = it.date.substring(0, 10), sharedPreferencesManager = SharedPreferencesManager(context = context)) + "," + " Saat:" + it.date.substring(10, 19),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
                         color = if (isDarkThemeMode(context = context)) Color.White else Color.Black

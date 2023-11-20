@@ -19,6 +19,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Menu
@@ -379,7 +381,11 @@ fun DividerTextComponent(context: Context) {
 
 
 @Composable
-fun ClickableLoginTextComponent(tryingToLogin: Boolean = true, onTextSelected: (String) -> Unit, context: Context) {
+fun ClickableLoginTextComponent(
+    tryingToLogin: Boolean = true,
+    onTextSelected: (String) -> Unit,
+    context: Context
+) {
     val initialText =
         if (tryingToLogin) "Zaten hesabınız var mı? " else "Henüz hesabınız yok mu? "
     val loginText = if (tryingToLogin) "Giriş" else "Kayıt Ol"
@@ -553,7 +559,9 @@ fun NavigationDrawerBody(
     navigationDrawerItems: List<NavigationItem>,
     onNavigationItemClicked: (NavigationItem) -> Unit,
     darkTheme: Boolean = false,
-    onThemeUpdated: () -> Unit
+    onThemeUpdated: () -> Unit,
+    onDateFormatUpdated: () -> Unit,
+    isDMYorN: Boolean = false
 ) {
     LazyColumn(
         modifier = Modifier
@@ -595,20 +603,40 @@ fun NavigationDrawerBody(
                 ) {
                     NavigationItemRow(item = it, onNavigationItemClicked, darkTheme)
 
-                    if (it.itemId == "themeSetting") {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .align(Alignment.CenterEnd)
-                                .padding(end = 16.dp)
-                        ) {
-                            EarthquakeAppTheme(darkTheme = darkTheme) {
-                                ThemeSwitcher(
-                                    darkTheme = darkTheme,
-                                    size = 36.dp,
-                                    padding = 5.dp,
-                                    onClick = onThemeUpdated
-                                )
+                    when {
+                        it.itemId == "themeSetting" -> {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .align(Alignment.CenterEnd)
+                                    .padding(end = 16.dp)
+                            ) {
+                                EarthquakeAppTheme(darkTheme = darkTheme) {
+                                    ThemeSwitcher(
+                                        darkTheme = darkTheme,
+                                        size = 36.dp,
+                                        padding = 5.dp,
+                                        onClick = onThemeUpdated
+                                    )
+                                }
+                            }
+                        }
+
+                        it.itemId == "dateFormatSetting" -> {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .align(Alignment.CenterEnd)
+                                    .padding(end = 16.dp)
+                            ) {
+                                EarthquakeAppTheme(darkTheme = darkTheme) {
+                                    DateFormatSwitcher(
+                                        size = 36.dp,
+                                        padding = 5.dp,
+                                        onClick = onDateFormatUpdated,
+                                        isDMYorN = isDMYorN
+                                    )
+                                }
                             }
                         }
                     }
@@ -757,4 +785,74 @@ fun saveThemeMode(isDarkMode: Boolean, context: Context) {
 fun isDarkThemeMode(context: Context): Boolean {
     val sharedPreferences = context.getSharedPreferences("ThemePreferences", Context.MODE_PRIVATE)
     return sharedPreferences.getBoolean("isDarkMode", false)
+}
+
+@Composable
+fun DateFormatSwitcher(
+    size: Dp = 150.dp,
+    iconSize: Dp = size / 3,
+    padding: Dp = 10.dp,
+    borderWidth: Dp = 1.dp,
+    parentShape: Shape = CircleShape,
+    toggleShape: Shape = CircleShape,
+    animationSpec: AnimationSpec<Dp> = tween(durationMillis = 300),
+    onClick: () -> Unit,
+    isDMYorN: Boolean = false
+) {
+    val offset by animateDpAsState(
+        targetValue = if (isDMYorN) 0.dp else size,
+        animationSpec = animationSpec
+    )
+
+    Box(modifier = Modifier
+        .width(size * 2)
+        .height(size)
+        .clip(shape = parentShape)
+        .clickable { onClick() }
+        .background(MaterialTheme.colorScheme.secondaryContainer)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(size)
+                .offset(x = offset)
+                .padding(all = padding)
+                .clip(shape = toggleShape)
+                .background(MaterialTheme.colorScheme.primary)
+        ) {}
+        Row(
+            modifier = Modifier
+                .border(
+                    border = BorderStroke(
+                        width = borderWidth,
+                        color = MaterialTheme.colorScheme.primary
+                    ),
+                    shape = parentShape
+                )
+        ) {
+            Box(
+                modifier = Modifier.size(size),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    modifier = Modifier.size(iconSize),
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Theme Icon",
+                    tint = if (isDMYorN) MaterialTheme.colorScheme.secondaryContainer
+                    else MaterialTheme.colorScheme.primary
+                )
+            }
+            Box(
+                modifier = Modifier.size(size),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    modifier = Modifier.size(iconSize),
+                    imageVector = Icons.Default.ArrowForward,
+                    contentDescription = "Theme Icon",
+                    tint = if (isDMYorN) MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.secondaryContainer
+                )
+            }
+        }
+    }
 }

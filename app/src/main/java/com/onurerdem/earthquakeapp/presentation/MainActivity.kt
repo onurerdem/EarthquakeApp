@@ -59,7 +59,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(route = Screen.EarthquakeScreen.route) {
-                            EarthquakeScreen(navController = navController, context = this@MainActivity)
+                            EarthquakeScreen(navController = navController, context = this@MainActivity, sharedPreferencesManager = SharedPreferencesManager(context = this@MainActivity))
                         }
 
                         composable(route = Screen.EarthquakeDetailScreen.route + "/{${EARTHQUAKE_ID}}") {
