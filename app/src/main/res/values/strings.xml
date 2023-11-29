@@ -1,3 +1,105 @@
 <resources>
-    <string name="app_name">EarthquakeApp</string>
+    <string name="app_name">Earthquake App</string>
+
+    <!-- OnboardingScreen -->
+    <string name="earthquake_information">Earthquake Information</string>
+    <string name="notifications_ready">Notifications Ready</string>
+    <string name="onboarding_descripton">Welcome! With our application, you can access earthquake information that occurred all over Turkey.</string>
+    <string name="onboarding_descripton2">With our application, you can review earthquake data in detail and see earthquakes on the map.</string>
+    <string name="onboarding_descripton3">You can review the data of new earthquakes by choosing to receive notifications with our application.</string>
+
+    <!-- RegisterScreen, EarthquakeScreen -->
+    <string name="are_you_sure_you_want_to_quit">Are you sure you want to quit?</string> <!-- RegisterScreen, EarthquakeScreen -->
+    <string name="yes">Yes</string> <!-- RegisterScreen, EarthquakeScreen -->
+    <string name="no">No</string> <!-- RegisterScreen, EarthquakeScreen -->
+    <string name="warning">Warning</string>
+    <string name="are_you_sure_you_want_to_start">Are you sure you want to start?</string>
+    <string name="back">Back</string>
+    <string name="next">Next</string>
+    <string name="get_started">Get Started</string>
+
+    <!-- RegisterScreen -->
+    <string name="hello">Hello,</string> <!-- ForgotPasswordScreen -->
+    <string name="register">Register.</string>
+    <string name="name">Name</string>
+    <string name="surname">Surname</string>
+    <string name="email">Email</string> <!-- LoginScreen, ForgotPasswordScreen -->
+    <string name="password">Password</string> <!-- LoginScreen -->
+    <string name="register_button">Register</string>
+
+    <!-- LoginScreen -->
+    <string name="login">Login</string> <!-- AppComponents -->
+    <string name="welcome_back">Welcome back.</string>
+    <string name="i_forgot_my_password">I forgot my password.</string>
+
+    <!-- ForgotPasswordScreen -->
+    <string name="reset_password">Reset password</string>
+
+    <!-- TermsAndConditionsScreen -->
+    <string name="privicy_policy">Privacy Policy\n\nOnur Erdem built the Shopping App app as a Free app. This SERVICE is provided by Onur Erdem at no cost and is intended for use as is.\n\nThis page is used to inform visitors regarding my policies with the collection, use, and disclosure of Personal Information if anyone decided to use my Service.\n\nIf you choose to use my Service, then you agree to the collection and use of information in relation to this policy. The Personal Information that I collect is used for providing and improving the Service. I will not use or share your information with anyone except as described in this Privacy Policy.\n\nThe terms used in this Privacy Policy have the same meanings as in our Terms and Conditions, which is accessible at Shopping App unless otherwise defined in this Privacy Policy.\n\nInformation Collection and Use\n\nFor a better experience, while using our Service, I may require you to provide us with certain personally identifiable information. The information that I request will be retained on your device and is not collected by me in any way.\n\nThe app does use third party services that may collect information used to identify you.\n\nLink to privacy policy of third party service providers used by the app\n\nGoogle Play Services\nLog Data\n\nI want to inform you that whenever you use my Service, in a case of an error in the app I collect data and information (through third party products) on your phone called Log Data. This Log Data may include information such as your device Internet Protocol (“IP”) address, device name, operating system version, the configuration of the app when utilizing my Service, the time and date of your use of the Service, and other statistics.\n\nCookies\n\nCookies are files with a small amount of data that are commonly used as anonymous unique identifiers. These are sent to your browser from the websites that you visit and are stored on your device\'s internal memory.\n\nThis Service does not use these “cookies” explicitly. However, the app may use third party code and libraries that use “cookies” to collect information and improve their services. You have the option to either accept or refuse these cookies and know when a cookie is being sent to your device. If you choose to refuse our cookies, you may not be able to use some portions of this Service.\n\nService Providers\n\nI may employ third-party companies and individuals due to the following reasons:\n\nTo facilitate our Service;\nTo provide the Service on our behalf;\nTo perform Service-related services; or\nTo assist us in analyzing how our Service is used.\nI want to inform users of this Service that these third parties have access to your Personal Information. The reason is to perform the tasks assigned to them on our behalf. However, they are obligated not to disclose or use the information for any other purpose.\n\nSecurity\n\nI value your trust in providing us your Personal Information, thus we are striving to use commercially acceptable means of protecting it. But remember that no method of transmission over the internet, or method of electronic storage is 100% secure and reliable, and I cannot guarantee its absolute security.\n\nLinks to Other Sites\n\nThis Service may contain links to other sites. If you click on a third-party link, you will be directed to that site. Note that these external sites are not operated by me. Therefore, I strongly advise you to review the Privacy Policy of these websites. I have no control over and assume no responsibility for the content, privacy policies, or practices of any third-party sites or services.\n\nChildren’s Privacy\n\nThese Services do not address anyone under the age of 13. I do not knowingly collect personally identifiable information from children under 13 years of age. In the case I discover that a child under 13 has provided me with personal information, I immediately delete this from our servers. If you are a parent or guardian and you are aware that your child has provided us with personal information, please contact me so that I will be able to do necessary actions.\n\nChanges to This Privacy Policy\n\nI may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. I will notify you of any changes by posting the new Privacy Policy on this page.\n\nThis policy is effective as of 2023-11-19.\n\nContact Us\n\nIf you have any questions or suggestions about my Privacy Policy, do not hesitate to contact me at erdem.onur@outlook.com.tr.\n\nThis privacy policy page was created at privacypolicytemplate.net and modified/generated by App Privacy Policy Generator.</string>
+    <string name="terms_of_use">Terms of use</string> <!-- AppComponents -->
+
+    <!-- EarthquakeScreen -->
+    <string name="are_you_sure_you_want_to_log_out">Are you sure you want to log out?</string>
+    <string name="language">Language</string>
+    <string name="you_can_choose_the_language_you_want_to_use">You can choose the language you want to use.</string>
+    <string name="english">English</string>
+    <string name="turkce">Türkçe</string>
+    <string name="notification">Notification</string>
+    <string name="do_you_want_to_receive_notifications">Do you want to receive notifications?</string>
+    <string name="application_format">Application Format</string>
+    <string name="you_can_choose_the_application_format_you_want_to_use">You can choose the application format you want to use.</string>
+    <string name="dark">Dark</string>
+    <string name="light">Light</string>
+    <string name="date_format">Date Format</string>
+    <string name="you_can_choose_the_date_format_you_want_to_use">You can choose the date format you want to use.</string>
+    <string name="day_month_year">Day-Month-Year</string>
+    <string name="month_day_year">Month-Day-Year</string>
+    <string name="earthquakes">Earthquakes</string>
+    <string name="city_etc_search">City etc. search…</string>
+    <string name="search_icon">Search icon.</string>
+    <string name="close_icon">Close icon.</string>
+    <string name="language_setting">language setting</string>
+    <string name="notification_setting">Notification Setting</string>
+    <string name="application_sormat_setting">Application Format Setting</string>
+    <string name="date_format_setting">Date Format Setting</string>
+
+    <!-- EarthquakeListRow -->
+    <string name="_km"> km</string> <!-- EarthquakeDetailListRow --> <!-- EarthquakeDetailScreen -->
+    <string name="date">Date: </string> <!-- EarthquakeDetailScreen -->
+    <string name="_hour"> Hour:</string> <!-- EarthquakeDetailScreen -->
+    <string name="magnitude">Magnitude: </string>
+    <string name="depth">Depth: </string>
+
+    <!-- EarthquakeDetailScreen -->
+    <string name="location_point_of_the_earthquake">Location Point Of The Earthquake:</string>
+    <string name="details_of_the_earthquake">Details Of The Earthquake:</string>
+    <string name="earthquake_magnitude">Earthquake magnitude: </string>
+    <string name="earthquake_depth">Earthquake depth: </string>
+    <string name="population_of_the_city">Population Of The City: </string>
+    <string name="cities_close_to_the_earthquake">Cities Close To The Earthquake:</string>
+    <string name="airports_close_to_the_earthquake">Airports Close To The Earthquake:</string>
+
+    <!-- Alert Dialog -->
+    <string name="icon">Icon</string>
+
+    <!-- AppComponents -->
+    <string name="hide_password">Hide password</string>
+    <string name="by_continuing_you_agree_that">By continuing you agree that:</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="and">And</string>
+    <string name="or">Or</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="dont_have_an_account_yet">Don\'t have an account yet?</string>
+    <string name="menu">Menu</string>
+    <string name="log_out">Log out</string>
+    <string name="email_">Email:</string>
+    <string name="application_drawer">Application Drawer</string>
+    <string name="settings">Settings</string>
+    <string name="capital_settings">SETTİNGS</string>
+    <string name="theme_icon">Theme Icon</string>
+    <string name="latest_information">Latest Information</string>
+    <string name="exit">Exit</string>
+    <string name="earthquake_information_provider">"Earthquake information provider: "</string>
+    <string name="show_password">Show password</string>
 </resources>

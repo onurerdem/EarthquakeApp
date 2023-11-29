@@ -33,7 +33,7 @@ class LoginViewModel() : ViewModel() {
                 if (event.email.length >= 3 && !event.email.isNullOrEmpty() && !event.email.isNullOrBlank()) {
                     errorEmailText = ""
                 } else {
-                    errorEmailText = "Lütfen en az 3 karakter girin."
+                    errorEmailText = "Please enter at least 3 characters."
                 }
             }
 
@@ -45,7 +45,7 @@ class LoginViewModel() : ViewModel() {
                 if (event.password.length >= 4 && !event.password.isNullOrEmpty() && !event.password.isNullOrBlank()) {
                     errorPasswordText = ""
                 } else {
-                    errorPasswordText = "Lütfen en az 4 karakter girin."
+                    errorPasswordText = "Please enter at least 4 characters."
                 }
             }
 
@@ -89,11 +89,11 @@ class LoginViewModel() : ViewModel() {
 
                 if(it.isSuccessful){
                     if (FirebaseAuth.getInstance().currentUser?.isEmailVerified == true) {
-                        Toast.makeText(context, "Giriş başarılı.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Login successful.", Toast.LENGTH_LONG).show()
                         navController.navigate(Screen.EarthquakeScreen.route)
                     } else {
-                        Toast.makeText(context, "E-postanız doğrulanmadı. Lütfen e-postanızı doğrulayın.", Toast.LENGTH_LONG).show()
-                        Toast.makeText(context, "Lütfen spam veya gereksiz klasörünüzü kontrol edin.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Your email has not been verified. Please verify your email.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Please check your spam or junk folder.", Toast.LENGTH_LONG).show()
                     }
                     loginInProgress.value = false
                 }
@@ -101,13 +101,8 @@ class LoginViewModel() : ViewModel() {
             .addOnFailureListener {
                 Log.d(TAG,"Inside_login_failure")
                 Log.d(TAG, "Exception= ${it.localizedMessage}")
-                if ("${it.localizedMessage}" == "The email address is badly formatted.") {
-                    Toast.makeText(context, "Lütfen e-posta adresinizi düzgün giriniz.", Toast.LENGTH_LONG).show()
-                } else if ("${it.localizedMessage}" == "An internal error has occurred. [ INVALID_LOGIN_CREDENTIALS ]") {
-                    Toast.makeText(context, "Geçersiz e-posta veya şifre.", Toast.LENGTH_LONG).show()
-                } else {
-                    Toast.makeText(context, "Giriş başarısız.", Toast.LENGTH_LONG).show()
-                }
+
+                Toast.makeText(context, "${it.localizedMessage}", Toast.LENGTH_LONG).show()
 
                 loginInProgress.value = false
             }

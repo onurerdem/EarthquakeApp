@@ -31,6 +31,7 @@ import com.onurerdem.earthquakeapp.presentation.NormalTextComponent
 import com.onurerdem.earthquakeapp.presentation.PasswordTextFieldComponent
 import com.onurerdem.earthquakeapp.presentation.Screen
 import com.onurerdem.earthquakeapp.presentation.ClickableUnderLinedTextComponent
+import com.onurerdem.earthquakeapp.presentation.UIText
 import com.onurerdem.earthquakeapp.presentation.isDarkThemeMode
 import com.onurerdem.earthquakeapp.presentation.login.LoginEvent
 import com.onurerdem.earthquakeapp.presentation.login.LoginViewModel
@@ -60,12 +61,12 @@ fun LoginScreen(
                     .background(if (isDarkThemeMode(context = context)) Color.DarkGray else Color.White)
             ) {
 
-                NormalTextComponent(value = "Giriş", context = context)
-                HeadingTextComponent(value = "Tekrar hoşgeldiniz.", context = context)
+                NormalTextComponent(value = UIText.StringResource(R.string.login).likeString(), context = context)
+                HeadingTextComponent(value = UIText.StringResource(R.string.welcome_back).likeString(), context = context)
                 Spacer(modifier = Modifier.height(20.dp))
 
                 MyTextFieldComponent(
-                    labelValue = "Email",
+                    labelValue = UIText.StringResource(R.string.email).likeString(),
                     painterResource(id = R.drawable.baseline_mail_outline_24),
                     onTextChanged = {
                         loginViewModel.onEvent(LoginEvent.EmailChanged(it), navController, context)
@@ -80,7 +81,7 @@ fun LoginScreen(
                 }
 
                 PasswordTextFieldComponent(
-                    labelValue = "Şifre",
+                    labelValue = UIText.StringResource(R.string.password).likeString(),
                     painterResource(id = R.drawable.outline_lock_24),
                     onTextSelected = {
                         loginViewModel.onEvent(
@@ -99,7 +100,7 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(40.dp))
                 ClickableUnderLinedTextComponent(
-                    value = "Şifremi unuttum.",
+                    value = UIText.StringResource(R.string.i_forgot_my_password).likeString(),
                     onClick = {
                         navController.navigate(Screen.ForgotPasswordScreen.route)
                     }
@@ -108,7 +109,7 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(40.dp))
 
                 ButtonComponent(
-                    value = "Giriş",
+                    value = UIText.StringResource(R.string.login).likeString(),
                     onButtonClicked = {
                         loginViewModel.onEvent(
                             LoginEvent.LoginButtonClicked,

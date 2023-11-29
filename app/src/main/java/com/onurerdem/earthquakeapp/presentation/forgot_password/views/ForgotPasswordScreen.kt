@@ -28,6 +28,7 @@ import com.onurerdem.earthquakeapp.presentation.MainActivity
 import com.onurerdem.earthquakeapp.presentation.MyTextFieldComponent
 import com.onurerdem.earthquakeapp.presentation.NormalTextComponent
 import com.onurerdem.earthquakeapp.presentation.Screen
+import com.onurerdem.earthquakeapp.presentation.UIText
 import com.onurerdem.earthquakeapp.presentation.forgot_password.ForgotPasswordEvent
 import com.onurerdem.earthquakeapp.presentation.forgot_password.ForgotPasswordViewModel
 import com.onurerdem.earthquakeapp.presentation.isDarkThemeMode
@@ -59,11 +60,11 @@ fun ForgotPasswordScreen(
                     .background(if (isDarkThemeMode(context = context)) Color.DarkGray else Color.White)
             ) {
 
-                NormalTextComponent(value = "Merhaba", context = context)
+                NormalTextComponent(value = UIText.StringResource(R.string.hello).likeString(), context = context)
                 HeadingTextComponent(value = "Şifrenizi yenileyebilirsiniz.", context = context)
                 Spacer(modifier = Modifier.height(20.dp))
 
-                MyTextFieldComponent(labelValue = "Email",
+                MyTextFieldComponent(labelValue = UIText.StringResource(R.string.email).likeString(),
                     painterResource(id = R.drawable.baseline_mail_outline_24),
                     onTextChanged = {
                         scope.launch {
@@ -82,7 +83,7 @@ fun ForgotPasswordScreen(
                 Spacer(modifier = Modifier.height(40.dp))
 
                 ButtonComponent(
-                    value = "Şifreyi yenile",
+                    value = UIText.StringResource(R.string.reset_password).likeString(),
                     onButtonClicked = {
                         scope.launch {
                             forgotPasswordViewModel.onEvent(ForgotPasswordEvent.ResetPasswordButtonClicked, navController, context)

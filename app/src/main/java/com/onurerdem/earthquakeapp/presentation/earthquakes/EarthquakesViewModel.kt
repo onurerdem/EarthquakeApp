@@ -1,11 +1,6 @@
 package com.onurerdem.earthquakeapp.presentation.earthquakes
 
 import android.util.Log
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.Lightbulb
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
@@ -14,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.onurerdem.earthquakeapp.domain.model.Earthquake
-import com.onurerdem.earthquakeapp.domain.model.NavigationItem
 import com.onurerdem.earthquakeapp.domain.use_case.get_earthquakes.GetEarthquakeUseCase
 import com.onurerdem.earthquakeapp.presentation.Screen
 import com.onurerdem.earthquakeapp.util.Resource
@@ -33,42 +27,15 @@ class EarthquakesViewModel @Inject constructor(
     private val getEarthquakeUseCase: GetEarthquakeUseCase
 ) : ViewModel() {
     private val _state = mutableStateOf<EarthquakesState>(EarthquakesState())
-    val state : State<EarthquakesState> = _state
+    val state: State<EarthquakesState> = _state
 
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean>
         get() = _isRefreshing.asStateFlow()
 
-    private var job : Job? = null
+    private var job: Job? = null
 
     private val TAG = EarthquakesViewModel::class.simpleName
-
-    val navigationItemsList = listOf<NavigationItem>(
-        NavigationItem(
-            title = "Dil",
-            icon = Icons.Default.Language,
-            description = "Dil Ayarı",
-            itemId = "languageSetting"
-        ),
-        NavigationItem(
-            title = "Bildirim",
-            icon = Icons.Default.Notifications,
-            description = "Bildirim Ayarı",
-            itemId = "notificationSetting"
-        ),
-        NavigationItem(
-            title = "Uygulama Biçimi",
-            icon = Icons.Default.Lightbulb,
-            description = "Uygulama Biçimi Ayarı",
-            itemId = "themeSetting"
-        ),
-        NavigationItem(
-            title = "Tarih Biçimi",
-            icon = Icons.Default.CalendarMonth,
-            description = "Tarih Biçimi Ayarı",
-            itemId = "dateFormatSetting"
-        )
-    )
 
     val isUserLoggedIn: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -82,7 +49,7 @@ class EarthquakesViewModel @Inject constructor(
         job?.cancel()
 
         job = getEarthquakeUseCase.executeGetEarthquakes(search).onEach {
-            when(it) {
+            when (it) {
                 is Resource.Success -> {
                     if (search.isBlank() || search.length < 3) {
                         _state.value = EarthquakesState(earthquakes = it.data ?: emptyList())
@@ -101,7 +68,9 @@ class EarthquakesViewModel @Inject constructor(
                 }
 
                 is Resource.Error -> {
-                    _state.value = EarthquakesState(error = it.message ?: "Error!")
+                    _state.value = EarthquakesState(
+                        error = it.message ?: "Error!"
+                    )
                 }
 
                 is Resource.Loading -> {
@@ -114,7 +83,7 @@ class EarthquakesViewModel @Inject constructor(
     }
 
     fun onEvent(event: EarthquakesEvent) {
-        when(event) {
+        when (event) {
             is EarthquakesEvent.Search -> {
                 getEarthquakes(event.searchString)
             }

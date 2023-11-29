@@ -36,6 +36,7 @@ import com.onurerdem.earthquakeapp.presentation.MyTextFieldComponent
 import com.onurerdem.earthquakeapp.presentation.NormalTextComponent
 import com.onurerdem.earthquakeapp.presentation.PasswordTextFieldComponent
 import com.onurerdem.earthquakeapp.presentation.Screen
+import com.onurerdem.earthquakeapp.presentation.UIText
 import com.onurerdem.earthquakeapp.presentation.isDarkThemeMode
 import com.onurerdem.earthquakeapp.presentation.register.RegisterEvent
 import com.onurerdem.earthquakeapp.presentation.register.RegisterViewModel
@@ -59,12 +60,12 @@ fun RegisterScreen(
                     openAlertDialog.value = false
                     activity?.finish()
                 },
-                dialogTitle = "Çıkış",
-                dialogText = "Çıkmak istediğinize emin misiniz?",
+                dialogTitle = UIText.StringResource(R.string.exit).likeString(),
+                dialogText = UIText.StringResource(R.string.are_you_sure_you_want_to_quit).likeString(),
                 icon = Icons.Default.ExitToApp,
                 iconContentColor = Color.Red,
-                confirmButtonText = "Evet",
-                dismissButtonText = "Hayır",
+                confirmButtonText = UIText.StringResource(R.string.yes).likeString(),
+                dismissButtonText = UIText.StringResource(R.string.no).likeString(),
                 dismissButtonColor = Color.Red,
                 confirmButtonIcon = null,
                 dismissButtonIcon = null,
@@ -91,12 +92,12 @@ fun RegisterScreen(
                     .background(if (isDarkThemeMode(context = context)) Color.DarkGray else Color.White)
             ) {
 
-                NormalTextComponent(value = "Merhaba,", context = context)
-                HeadingTextComponent(value = "Kayıt ol.", context = context)
+                NormalTextComponent(value = UIText.StringResource(R.string.hello).likeString(), context = context)
+                HeadingTextComponent(value = UIText.StringResource(R.string.register).likeString(), context = context)
                 Spacer(modifier = Modifier.height(20.dp))
 
                 MyTextFieldComponent(
-                    labelValue = "Ad",
+                    labelValue = UIText.StringResource(R.string.name).likeString(),
                     painterResource(id = R.drawable.baseline_person_outline_24),
                     onTextChanged = {
                         registerViewModel.onEvent(
@@ -115,7 +116,7 @@ fun RegisterScreen(
                 }
 
                 MyTextFieldComponent(
-                    labelValue = "Soyad",
+                    labelValue = UIText.StringResource(R.string.surname).likeString(),
                     painterResource = painterResource(id = R.drawable.baseline_person_outline_24),
                     onTextChanged = {
                         registerViewModel.onEvent(
@@ -134,7 +135,7 @@ fun RegisterScreen(
                 }
 
                 MyTextFieldComponent(
-                    labelValue = "Email",
+                    labelValue = UIText.StringResource(R.string.email).likeString(),
                     painterResource = painterResource(id = R.drawable.baseline_mail_outline_24),
                     onTextChanged = {
                         registerViewModel.onEvent(
@@ -153,7 +154,7 @@ fun RegisterScreen(
                 }
 
                 PasswordTextFieldComponent(
-                    labelValue = "Şifre",
+                    labelValue = UIText.StringResource(R.string.password).likeString(),
                     painterResource = painterResource(id = R.drawable.outline_lock_24),
                     onTextSelected = {
                         registerViewModel.onEvent(
@@ -191,7 +192,7 @@ fun RegisterScreen(
                 Spacer(modifier = Modifier.height(40.dp))
 
                 ButtonComponent(
-                    value = "Kayıt ol",
+                    value = UIText.StringResource(R.string.register_button).likeString(),
                     onButtonClicked = {
                         registerViewModel.onEvent(
                             RegisterEvent.RegisterButtonClicked,

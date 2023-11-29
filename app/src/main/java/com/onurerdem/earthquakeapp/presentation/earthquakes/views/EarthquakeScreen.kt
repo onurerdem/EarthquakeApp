@@ -1,9 +1,13 @@
 package com.onurerdem.earthquakeapp.presentation.earthquakes.views
 
 import android.app.Activity
+import android.app.LocaleManager
 import android.content.Context
+import android.os.Build
+import android.os.LocaleList
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -16,8 +20,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.TextField
@@ -49,18 +55,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.onurerdem.earthquakeapp.R
+import com.onurerdem.earthquakeapp.domain.model.NavigationItem
 import com.onurerdem.earthquakeapp.presentation.AlertDialogExample
 import com.onurerdem.earthquakeapp.presentation.AppToolbar
 import com.onurerdem.earthquakeapp.presentation.NavigationDrawerBody
 import com.onurerdem.earthquakeapp.presentation.NavigationDrawerHeader
 import com.onurerdem.earthquakeapp.presentation.Screen
 import com.onurerdem.earthquakeapp.presentation.SharedPreferencesManager
+import com.onurerdem.earthquakeapp.presentation.UIText
 import com.onurerdem.earthquakeapp.presentation.earthquakes.EarthquakesEvent
 import com.onurerdem.earthquakeapp.presentation.earthquakes.EarthquakesViewModel
 import com.onurerdem.earthquakeapp.presentation.isDarkThemeMode
+import com.onurerdem.earthquakeapp.presentation.isTurkish
+import com.onurerdem.earthquakeapp.presentation.saveIsTurkish
 import com.onurerdem.earthquakeapp.presentation.saveThemeMode
 import kotlinx.coroutines.launch
 
@@ -92,6 +105,8 @@ fun EarthquakeScreen(
 
     var isDMYorN by remember { mutableStateOf(sharedPreferencesManager.getDMYorN()) }
 
+    var isTurkish by remember { mutableStateOf(isTurkish(context = context)) }
+
     when {
         openExitAlertDialog.value -> {
             AlertDialogExample(
@@ -100,12 +115,13 @@ fun EarthquakeScreen(
                     openExitAlertDialog.value = false
                     activity?.finish()
                 },
-                dialogTitle = "Çıkış",
-                dialogText = "Çıkmak istediğinize emin misiniz?",
+                dialogTitle = UIText.StringResource(R.string.exit).likeString(),
+                dialogText = UIText.StringResource(R.string.are_you_sure_you_want_to_quit)
+                    .likeString(),
                 icon = Icons.Default.ExitToApp,
                 iconContentColor = Color.Red,
-                confirmButtonText = "Evet",
-                dismissButtonText = "Hayır",
+                confirmButtonText = UIText.StringResource(R.string.yes).likeString(),
+                dismissButtonText = UIText.StringResource(R.string.no).likeString(),
                 dismissButtonColor = Color.Red,
                 confirmButtonIcon = null,
                 dismissButtonIcon = null,
@@ -120,12 +136,13 @@ fun EarthquakeScreen(
                     openLogoutAlertDialog.value = false
                     viewModel.logout(navController)
                 },
-                dialogTitle = "Çıkış",
-                dialogText = "Oturumunuzu kapatmak istediğinize emin misiniz?",
+                dialogTitle = UIText.StringResource(R.string.exit).likeString(),
+                dialogText = UIText.StringResource(R.string.are_you_sure_you_want_to_log_out)
+                    .likeString(),
                 icon = Icons.Default.Logout,
                 iconContentColor = Color.Red,
-                confirmButtonText = "Evet",
-                dismissButtonText = "Hayır",
+                confirmButtonText = UIText.StringResource(R.string.yes).likeString(),
+                dismissButtonText = UIText.StringResource(R.string.no).likeString(),
                 dismissButtonColor = Color.Red,
                 confirmButtonIcon = null,
                 dismissButtonIcon = null,
@@ -135,16 +152,45 @@ fun EarthquakeScreen(
 
         openLanguageAlertDialog.value -> {
             AlertDialogExample(
-                onDismissRequest = { openLanguageAlertDialog.value = false },
+                onDismissRequest = {
+                    openLanguageAlertDialog.value = false
+                    isTurkish = !isTurkish
+                    saveIsTurkish(
+                        isTurkish = !isTurkish(context = context),
+                        context = context
+                    )
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        context.getSystemService(LocaleManager::class.java)
+                            .applicationLocales = LocaleList.forLanguageTags("tr")
+                    } else {
+                        AppCompatDelegate.setApplicationLocales(
+                            LocaleListCompat.forLanguageTags("tr")
+                        )
+                    }
+                },
                 onConfirmation = {
                     openLanguageAlertDialog.value = false
+                    isTurkish = !isTurkish
+                    saveIsTurkish(
+                        isTurkish = !isTurkish(context = context),
+                        context = context
+                    )
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        context.getSystemService(LocaleManager::class.java)
+                            .applicationLocales = LocaleList.forLanguageTags("en")
+                    } else {
+                        AppCompatDelegate.setApplicationLocales(
+                            LocaleListCompat.forLanguageTags("en")
+                        )
+                    }
                 },
-                dialogTitle = "Dil",
-                dialogText = "Kullanmak istediğiniz dili seçebilirsiniz.",
+                dialogTitle = UIText.StringResource(R.string.language).likeString(),
+                dialogText = UIText.StringResource(R.string.you_can_choose_the_language_you_want_to_use)
+                    .likeString(),
                 icon = Icons.Default.Language,
                 iconContentColor = if (darkTheme) Color.White else Color.Black,
-                confirmButtonText = "English",
-                dismissButtonText = "Türkçe",
+                confirmButtonText = UIText.StringResource(R.string.english).likeString(),
+                dismissButtonText = UIText.StringResource(R.string.turkce).likeString(),
                 dismissButtonColor = Color.Blue,
                 confirmButtonIcon = null,
                 dismissButtonIcon = null,
@@ -158,12 +204,13 @@ fun EarthquakeScreen(
                 onConfirmation = {
                     openNotificationAlertDialog.value = false
                 },
-                dialogTitle = "Bildirim",
-                dialogText = "Bildirim almak istiyor musunuz?",
+                dialogTitle = UIText.StringResource(R.string.notification).likeString(),
+                dialogText = UIText.StringResource(R.string.do_you_want_to_receive_notifications)
+                    .likeString(),
                 icon = Icons.Default.Notifications,
                 iconContentColor = if (darkTheme) Color.White else Color.Black,
-                confirmButtonText = "Evet",
-                dismissButtonText = "Hayır",
+                confirmButtonText = UIText.StringResource(R.string.yes).likeString(),
+                dismissButtonText = UIText.StringResource(R.string.no).likeString(),
                 dismissButtonColor = Color.Red,
                 confirmButtonIcon = null,
                 dismissButtonIcon = null,
@@ -193,12 +240,13 @@ fun EarthquakeScreen(
                         )
                     }
                 },
-                dialogTitle = "Uygulama Biçimi",
-                dialogText = "Kullanmak istediğiniz uygulama biçimini seçebilirsiniz.",
+                dialogTitle = UIText.StringResource(R.string.application_format).likeString(),
+                dialogText = UIText.StringResource(R.string.you_can_choose_the_application_format_you_want_to_use)
+                    .likeString(),
                 icon = Icons.Default.Lightbulb,
                 iconContentColor = if (darkTheme) Color.White else Color.Black,
-                confirmButtonText = "Karanlık",
-                dismissButtonText = "Aydınlık",
+                confirmButtonText = UIText.StringResource(R.string.dark).likeString(),
+                dismissButtonText = UIText.StringResource(R.string.light).likeString(),
                 dismissButtonColor = Color.Blue,
                 confirmButtonIcon = Icons.Default.DarkMode,
                 dismissButtonIcon = Icons.Default.LightMode,
@@ -224,12 +272,13 @@ fun EarthquakeScreen(
                         sharedPreferencesManager.saveDateFormat("dd.MM.yyyy")
                     }
                 },
-                dialogTitle = "Tarih Biçimi",
-                dialogText = "Kullanmak istediğiniz tarih biçimini seçebilirsiniz.",
+                dialogTitle = UIText.StringResource(R.string.date_format).likeString(),
+                dialogText = UIText.StringResource(R.string.you_can_choose_the_date_format_you_want_to_use)
+                    .likeString(),
                 icon = Icons.Default.CalendarMonth,
                 iconContentColor = if (darkTheme) Color.White else Color.Black,
-                confirmButtonText = "Gün-Ay-Yıl",
-                dismissButtonText = "Ay-Gün-Yıl",
+                confirmButtonText = UIText.StringResource(R.string.day_month_year).likeString(),
+                dismissButtonText = UIText.StringResource(R.string.month_day_year).likeString(),
                 dismissButtonColor = Color.Blue,
                 confirmButtonIcon = null,
                 dismissButtonIcon = null,
@@ -243,11 +292,38 @@ fun EarthquakeScreen(
 
     viewModel.getUserData()
 
+    val navigationItemsList = listOf<NavigationItem>(
+        NavigationItem(
+            title = UIText.StringResource(R.string.language).likeString(),
+            icon = Icons.Default.Language,
+            description = UIText.StringResource(R.string.language_setting).likeString(),
+            itemId = "languageSetting"
+        ),
+        NavigationItem(
+            title = UIText.StringResource(R.string.notification).likeString(),
+            icon = Icons.Default.Notifications,
+            description = UIText.StringResource(R.string.notification_setting).likeString(),
+            itemId = "notificationSetting"
+        ),
+        NavigationItem(
+            title = UIText.StringResource(R.string.application_format).likeString(),
+            icon = Icons.Default.Lightbulb,
+            description = UIText.StringResource(R.string.application_sormat_setting).likeString(),
+            itemId = "themeSetting"
+        ),
+        NavigationItem(
+            title = UIText.StringResource(R.string.date_format).likeString(),
+            icon = Icons.Default.CalendarMonth,
+            description = UIText.StringResource(R.string.date_format_setting).likeString(),
+            itemId = "dateFormatSetting"
+        )
+    )
+
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
             AppToolbar(
-                toolbarTitle = "Depremler",
+                toolbarTitle = UIText.StringResource(R.string.earthquakes).likeString(),
                 logoutButtonClicked = {
                     openLogoutAlertDialog.value = !openLogoutAlertDialog.value
                 },
@@ -263,7 +339,7 @@ fun EarthquakeScreen(
         drawerContent = {
             NavigationDrawerHeader(viewModel.emailId.value, darkTheme = darkTheme)
             NavigationDrawerBody(
-                navigationDrawerItems = viewModel.navigationItemsList,
+                navigationDrawerItems = navigationItemsList,
                 onNavigationItemClicked = {
                     Log.d("ComingHere", "inside_NavigationItemClicked")
                     Log.d("ComingHere", "${it.itemId} ${it.title}")
@@ -304,7 +380,34 @@ fun EarthquakeScreen(
                         sharedPreferencesManager.saveDateFormat("dd.MM.yyyy")
                     }
                 },
-                isDMYorN = isDMYorN
+                onLanguageUpdated = {
+                    isTurkish = !isTurkish
+                    saveIsTurkish(
+                        isTurkish = !isTurkish(context = context),
+                        context = context
+                    )
+                    if (isTurkish == true) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            context.getSystemService(LocaleManager::class.java)
+                                .applicationLocales = LocaleList.forLanguageTags("tr")
+                        } else {
+                            AppCompatDelegate.setApplicationLocales(
+                                LocaleListCompat.forLanguageTags("tr")
+                            )
+                        }
+                    } else {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            context.getSystemService(LocaleManager::class.java)
+                                .applicationLocales = LocaleList.forLanguageTags("en")
+                        } else {
+                            AppCompatDelegate.setApplicationLocales(
+                                LocaleListCompat.forLanguageTags("en")
+                            )
+                        }
+                    }
+                },
+                isDMYorN = isDMYorN,
+                isTurkish = isTurkish
             )
         }
 
@@ -327,7 +430,7 @@ fun EarthquakeScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(12.dp),
-                        hint = "Şehir vb. ara...",
+                        hint = UIText.StringResource(R.string.city_etc_search).likeString(),
                         onSearch = {
                             viewModel.onEvent(EarthquakesEvent.Search(it))
                         },
@@ -345,6 +448,22 @@ fun EarthquakeScreen(
                             )
                         }
                     }
+                }
+
+                if (state.error.isNotBlank()) {
+                    androidx.compose.material.Text(
+                        text = state.error,
+                        color = MaterialTheme.colors.error,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(14.dp)
+                            .align(Alignment.Center)
+                    )
+                }
+
+                if (state.isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
 
                 PullRefreshIndicator(
@@ -413,7 +532,7 @@ fun EarthquakeSearchBar(
                         focusManager.clearFocus()
                     },
                     imageVector = Icons.Default.Search,
-                    contentDescription = "Search icon.",
+                    contentDescription = UIText.StringResource(R.string.search_icon).likeString(),
                     tint = if (darktheme) Color.LightGray else Color.Gray
                 )
             },
@@ -425,7 +544,7 @@ fun EarthquakeSearchBar(
                         focusManager.clearFocus()
                     },
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Close icon.",
+                    contentDescription = UIText.StringResource(R.string.close_icon).likeString(),
                     tint = if (darktheme) Color.LightGray else Color.Gray
                 )
             }

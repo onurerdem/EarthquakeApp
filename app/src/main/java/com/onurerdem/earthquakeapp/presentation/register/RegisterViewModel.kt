@@ -38,7 +38,7 @@ class RegisterViewModel : ViewModel() {
                 if (event.firstName.length >= 2 && !event.firstName.isNullOrEmpty() && !event.firstName.isNullOrBlank()) {
                     errorFirstNameText = ""
                 } else {
-                    errorFirstNameText = "Lütfen en az 2 karakter girin."
+                    errorFirstNameText = "Please enter at least 2 characters."
                 }
             }
 
@@ -51,7 +51,7 @@ class RegisterViewModel : ViewModel() {
                 if (event.lastName.length >= 2 && !event.lastName.isNullOrEmpty() && !event.lastName.isNullOrBlank()) {
                     errorLastNameText = ""
                 } else {
-                    errorLastNameText = "Lütfen en az 2 karakter girin."
+                    errorLastNameText = "Please enter at least 2 characters."
                 }
             }
 
@@ -64,7 +64,7 @@ class RegisterViewModel : ViewModel() {
                 if (event.email.length >= 3 && !event.email.isNullOrEmpty() && !event.email.isNullOrBlank()) {
                     errorEmailText = ""
                 } else {
-                    errorEmailText = "Lütfen en az 3 karakter girin."
+                    errorEmailText = "Please enter at least 3 characters."
                 }
             }
 
@@ -77,7 +77,7 @@ class RegisterViewModel : ViewModel() {
                 if (event.password.length >= 4 && !event.password.isNullOrEmpty() && !event.password.isNullOrBlank()) {
                     errorPasswordText = ""
                 } else {
-                    errorPasswordText = "Lütfen en az 4 karakter girin."
+                    errorPasswordText = "Please enter at least 4 characters."
                 }
             }
 
@@ -93,7 +93,7 @@ class RegisterViewModel : ViewModel() {
                 if (event.status == true) {
                     errorPrivacyPolicyCheckBoxClickedText = ""
                 } else {
-                    errorPrivacyPolicyCheckBoxClickedText = "Lütfen kabul edin."
+                    errorPrivacyPolicyCheckBoxClickedText = "Please accept it."
                 }
             }
         }
@@ -176,8 +176,8 @@ class RegisterViewModel : ViewModel() {
                 signUpInProgress.value = false
                 if (it.isSuccessful) {
                     FirebaseAuth.getInstance().currentUser?.sendEmailVerification()
-                    Toast.makeText(context, "Kayıt başarılı. E-postanızı doğrulamak için size bir e-mail gönderdik.", Toast.LENGTH_LONG).show()
-                    Toast.makeText(context, "Lütfen spam veya gereksiz klasörünüzü kontrol edin.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Registration Successful. We have sent you an email to verify your email.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Please check your spam or junk folder.", Toast.LENGTH_LONG).show()
                     FirebaseAuth.getInstance().signOut()
                     navController.navigate(Screen.LoginScreen.route)
                 }
@@ -186,15 +186,8 @@ class RegisterViewModel : ViewModel() {
                 Log.d(TAG, "Inside_OnFailureListener")
                 Log.d(TAG, "Exception= ${it.message}")
                 Log.d(TAG, "Exception= ${it.localizedMessage}")
-                if ("${it.localizedMessage}" == "The email address is badly formatted.") {
-                    Toast.makeText(context, "Lütfen e-posta adresinizi düzgün giriniz.", Toast.LENGTH_LONG).show()
-                } else if ("${it.localizedMessage}" == "The given password is invalid. [ Password should be at least 6 characters ]") {
-                    Toast.makeText(context, "Şifrenizde en az 6 karakter olmalıdır.", Toast.LENGTH_LONG).show()
-                } else if ("${it.localizedMessage}" == "The email address is already in use by another account.") {
-                    Toast.makeText(context, "E-posta adresi zaten başka bir hesap tarafından kullanılıyor.", Toast.LENGTH_LONG).show()
-                } else {
-                    Toast.makeText(context, "Kayıt başarısız.", Toast.LENGTH_LONG).show()
-                }
+
+                Toast.makeText(context, "${it.localizedMessage}", Toast.LENGTH_LONG).show()
             }
     }
 }

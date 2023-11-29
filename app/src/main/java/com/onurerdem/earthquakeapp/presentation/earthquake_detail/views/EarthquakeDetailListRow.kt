@@ -15,8 +15,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.onurerdem.earthquakeapp.R
 import com.onurerdem.earthquakeapp.data.remote.dto.AirportX
 import com.onurerdem.earthquakeapp.data.remote.dto.ClosestCityX
+import com.onurerdem.earthquakeapp.presentation.UIText
 import com.onurerdem.earthquakeapp.presentation.isDarkThemeMode
 
 @Composable
@@ -56,7 +58,7 @@ fun EarthquakeDetailListRow(
 
             if (closestCity != null) {
                 Text(
-                    text = closestCity.distance.toString() + " km",
+                    text = closestCity.distance.toString() + " " + UIText.StringResource(R.string._km).likeString(),
                     style = MaterialTheme.typography.body2,
                     overflow = TextOverflow.Ellipsis,
                     color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
@@ -80,7 +82,7 @@ fun EarthquakeDetailListRow(
 
             if (airports != null) {
                 Text(
-                    text = airports.distance.toString() + " km",
+                    text = airports.distance.toString() + " " + UIText.StringResource(R.string._km).likeString(),
                     style = MaterialTheme.typography.body2,
                     overflow = TextOverflow.Ellipsis,
                     color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,

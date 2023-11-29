@@ -21,9 +21,11 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Nightlight
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Visibility
@@ -225,9 +227,9 @@ fun PasswordTextFieldComponent(
             }
 
             val description = if (passwordVisible.value) {
-                "Şifreyi gizle"
+                UIText.StringResource(R.string.hide_password).likeString()
             } else {
-                "Şifreyi göster"
+                UIText.StringResource(R.string.show_password).likeString()
             }
 
             IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
@@ -269,10 +271,12 @@ fun CheckboxComponent(
 
 @Composable
 fun ClickableTextComponent(onTextSelected: (String) -> Unit, context: Context) {
-    val initialText = "Devam ederek şunları kabul etmiş olursunuz: "
-    val privacyPolicyText = "Gizlilik Politikası"
-    val andText = " ve "
-    val termsAndConditionsText = "Kullanım koşulu"
+    val initialText =
+        UIText.StringResource(R.string.by_continuing_you_agree_that).likeString() + " "
+    val privacyPolicyText =
+        UIText.StringResource(R.string.by_continuing_you_agree_that).likeString()
+    val andText = " " + UIText.StringResource(R.string.and).likeString() + " "
+    val termsAndConditionsText = UIText.StringResource(R.string.terms_of_use).likeString()
 
     val annotatedString = buildAnnotatedString {
         withStyle(style = SpanStyle(color = if (isDarkThemeMode(context = context)) Color.White else Color.Black)) {
@@ -365,7 +369,7 @@ fun DividerTextComponent(context: Context) {
 
         Text(
             modifier = Modifier.padding(8.dp),
-            text = "Ya Da",
+            text = UIText.StringResource(R.string.or).likeString(),
             fontSize = 18.sp,
             color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
         )
@@ -387,8 +391,11 @@ fun ClickableLoginTextComponent(
     context: Context
 ) {
     val initialText =
-        if (tryingToLogin) "Zaten hesabınız var mı? " else "Henüz hesabınız yok mu? "
-    val loginText = if (tryingToLogin) "Giriş" else "Kayıt Ol"
+        if (tryingToLogin) UIText.StringResource(R.string.already_have_an_account)
+            .likeString() + " " else UIText.StringResource(R.string.dont_have_an_account_yet)
+            .likeString() + " "
+    val loginText = if (tryingToLogin) UIText.StringResource(R.string.login)
+        .likeString() else UIText.StringResource(R.string.register).likeString()
 
     val annotatedString = buildAnnotatedString {
         withStyle(style = SpanStyle(color = if (isDarkThemeMode(context = context)) Color.White else Color.Black)) {
@@ -481,7 +488,7 @@ fun AppToolbar(
             }) {
                 Icon(
                     imageVector = Icons.Filled.Menu,
-                    contentDescription = "Menü",
+                    contentDescription = UIText.StringResource(R.string.menu).likeString(),
                     tint = Color.White
                 )
             }
@@ -492,7 +499,7 @@ fun AppToolbar(
             }) {
                 Icon(
                     imageVector = Icons.Filled.Logout,
-                    contentDescription = "Çıkış Yap",
+                    contentDescription = UIText.StringResource(R.string.log_out).likeString(),
                     tint = Color.White
                 )
             }
@@ -534,7 +541,7 @@ fun NavigationDrawerHeader(value: String?, darkTheme: Boolean) {
 
             Row {
                 NavigationDrawerText(
-                    title = "E-Posta: ",
+                    title = UIText.StringResource(R.string.email_).likeString() + " ",
                     textUnit = 14.sp,
                     color = Color.White,
                     shadowColor = if (darkTheme) Color.Gray else Color.Black,
@@ -542,7 +549,8 @@ fun NavigationDrawerHeader(value: String?, darkTheme: Boolean) {
                     fontWeight = FontWeight.Bold
                 )
                 NavigationDrawerText(
-                    title = value ?: "Uygulama Çekmecesi",
+                    title = value ?: UIText.StringResource(R.string.application_drawer)
+                        .likeString(),
                     textUnit = 14.sp,
                     color = Color.White,
                     shadowColor = if (darkTheme) Color.Gray else Color.Black,
@@ -561,7 +569,9 @@ fun NavigationDrawerBody(
     darkTheme: Boolean = false,
     onThemeUpdated: () -> Unit,
     onDateFormatUpdated: () -> Unit,
-    isDMYorN: Boolean = false
+    onLanguageUpdated: () -> Unit,
+    isDMYorN: Boolean = false,
+    isTurkish: Boolean = false
 ) {
     LazyColumn(
         modifier = Modifier
@@ -578,14 +588,14 @@ fun NavigationDrawerBody(
             ) {
                 Icon(
                     imageVector = Icons.Default.Settings,
-                    contentDescription = "Ayarlar",
+                    contentDescription = UIText.StringResource(R.string.settings).likeString(),
                     tint = if (darkTheme) Color.White else Color.Black
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
 
                 NavigationDrawerText(
-                    title = "AYARLAR",
+                    title = UIText.StringResource(R.string.capital_settings).likeString(),
                     textUnit = 24.sp,
                     color = if (darkTheme) Color.White else Color.Black,
                     shadowColor = if (darkTheme) Color.Gray else Color.LightGray,
@@ -635,6 +645,24 @@ fun NavigationDrawerBody(
                                         padding = 5.dp,
                                         onClick = onDateFormatUpdated,
                                         isDMYorN = isDMYorN
+                                    )
+                                }
+                            }
+                        }
+
+                        it.itemId == "languageSetting" -> {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .align(Alignment.CenterEnd)
+                                    .padding(end = 16.dp)
+                            ) {
+                                EarthquakeAppTheme(darkTheme = darkTheme) {
+                                    LanguageSwitcher(
+                                        size = 36.dp,
+                                        padding = 5.dp,
+                                        onClick = onLanguageUpdated,
+                                        isTurkish = isTurkish
                                     )
                                 }
                             }
@@ -836,7 +864,7 @@ fun DateFormatSwitcher(
                 Icon(
                     modifier = Modifier.size(iconSize),
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Theme Icon",
+                    contentDescription = UIText.StringResource(R.string.theme_icon).likeString(),
                     tint = if (isDMYorN) MaterialTheme.colorScheme.secondaryContainer
                     else MaterialTheme.colorScheme.primary
                 )
@@ -848,8 +876,90 @@ fun DateFormatSwitcher(
                 Icon(
                     modifier = Modifier.size(iconSize),
                     imageVector = Icons.Default.ArrowForward,
-                    contentDescription = "Theme Icon",
+                    contentDescription = UIText.StringResource(R.string.theme_icon).likeString(),
                     tint = if (isDMYorN) MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.secondaryContainer
+                )
+            }
+        }
+    }
+}
+
+fun saveIsTurkish(isTurkish: Boolean, context: Context) {
+    val sharedPreferences = context.getSharedPreferences("ThemePreferences", Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
+    editor.putBoolean("isTurkish", isTurkish)
+    editor.apply()
+}
+
+fun isTurkish(context: Context): Boolean {
+    val sharedPreferences = context.getSharedPreferences("ThemePreferences", Context.MODE_PRIVATE)
+    return sharedPreferences.getBoolean("isTurkish", false)
+}
+
+@Composable
+fun LanguageSwitcher(
+    size: Dp = 150.dp,
+    iconSize: Dp = size / 3,
+    padding: Dp = 10.dp,
+    borderWidth: Dp = 1.dp,
+    parentShape: Shape = CircleShape,
+    toggleShape: Shape = CircleShape,
+    animationSpec: AnimationSpec<Dp> = tween(durationMillis = 300),
+    onClick: () -> Unit,
+    isTurkish: Boolean = false
+) {
+    val offset by animateDpAsState(
+        targetValue = if (isTurkish) 0.dp else size,
+        animationSpec = animationSpec
+    )
+
+    Box(modifier = Modifier
+        .width(size * 2)
+        .height(size)
+        .clip(shape = parentShape)
+        .clickable { onClick() }
+        .background(MaterialTheme.colorScheme.secondaryContainer)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(size)
+                .offset(x = offset)
+                .padding(all = padding)
+                .clip(shape = toggleShape)
+                .background(MaterialTheme.colorScheme.primary)
+        ) {}
+        Row(
+            modifier = Modifier
+                .border(
+                    border = BorderStroke(
+                        width = borderWidth,
+                        color = MaterialTheme.colorScheme.primary
+                    ),
+                    shape = parentShape
+                )
+        ) {
+            Box(
+                modifier = Modifier.size(size),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    modifier = Modifier.size(iconSize),
+                    imageVector = Icons.Default.MyLocation,
+                    contentDescription = UIText.StringResource(R.string.theme_icon).likeString(),
+                    tint = if (isTurkish) MaterialTheme.colorScheme.secondaryContainer
+                    else MaterialTheme.colorScheme.primary
+                )
+            }
+            Box(
+                modifier = Modifier.size(size),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    modifier = Modifier.size(iconSize),
+                    imageVector = Icons.Default.Language,
+                    contentDescription = UIText.StringResource(R.string.theme_icon).likeString(),
+                    tint = if (isTurkish) MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.secondaryContainer
                 )
             }

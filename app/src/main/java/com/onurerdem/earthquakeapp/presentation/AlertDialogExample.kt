@@ -11,8 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.onurerdem.earthquakeapp.R
 
 @Composable
 fun AlertDialogExample(
@@ -31,7 +33,7 @@ fun AlertDialogExample(
 ) {
     AlertDialog(
         icon = {
-            Icon(icon, contentDescription = "Simge")
+            Icon(icon, contentDescription = stringResource(R.string.icon))
         },
         title = {
             Text(
@@ -59,7 +61,7 @@ fun AlertDialogExample(
                 if (confirmButtonIcon != null) {
                     Icon(
                         imageVector = confirmButtonIcon,
-                        contentDescription = "Simge",
+                        contentDescription = stringResource(R.string.icon),
                         tint = if (isDarkThemeMode(context = context)) Color.White else Color.Black
                     )
                 }
@@ -82,7 +84,7 @@ fun AlertDialogExample(
                 if (dismissButtonIcon != null) {
                     Icon(
                         imageVector = dismissButtonIcon,
-                        contentDescription = "Simge",
+                        contentDescription = stringResource(R.string.icon),
                         tint = if (isDarkThemeMode(context = context)) Color.White else Color.Black
                     )
                 }
