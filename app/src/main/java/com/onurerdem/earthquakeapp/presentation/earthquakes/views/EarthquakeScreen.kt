@@ -1,5 +1,6 @@
 package com.onurerdem.earthquakeapp.presentation.earthquakes.views
 
+import android.Manifest
 import android.app.Activity
 import android.app.LocaleManager
 import android.content.Context
@@ -7,6 +8,7 @@ import android.os.Build
 import android.os.LocaleList
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -54,12 +56,20 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.work.BackoffPolicy
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.onurerdem.earthquakeapp.R
 import com.onurerdem.earthquakeapp.domain.model.NavigationItem
 import com.onurerdem.earthquakeapp.presentation.AlertDialogExample
@@ -69,15 +79,21 @@ import com.onurerdem.earthquakeapp.presentation.NavigationDrawerHeader
 import com.onurerdem.earthquakeapp.presentation.Screen
 import com.onurerdem.earthquakeapp.presentation.SharedPreferencesManager
 import com.onurerdem.earthquakeapp.presentation.UIText
+import com.onurerdem.earthquakeapp.presentation.allowNotification
 import com.onurerdem.earthquakeapp.presentation.earthquakes.EarthquakesEvent
 import com.onurerdem.earthquakeapp.presentation.earthquakes.EarthquakesViewModel
 import com.onurerdem.earthquakeapp.presentation.isDarkThemeMode
 import com.onurerdem.earthquakeapp.presentation.isTurkish
+import com.onurerdem.earthquakeapp.presentation.saveAllowNotification
 import com.onurerdem.earthquakeapp.presentation.saveIsTurkish
 import com.onurerdem.earthquakeapp.presentation.saveThemeMode
 import kotlinx.coroutines.launch
+import com.onurerdem.earthquakeapp.presentation.NotificationWorker
+import java.time.Duration
+import java.util.concurrent.TimeUnit
 
-@OptIn(ExperimentalMaterialApi::class)
+@RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalPermissionsApi::class)
 @Composable
 fun EarthquakeScreen(
     navController: NavController,
@@ -106,6 +122,53 @@ fun EarthquakeScreen(
     var isDMYorN by remember { mutableStateOf(sharedPreferencesManager.getDMYorN()) }
 
     var isTurkish by remember { mutableStateOf(isTurkish(context = context)) }
+
+    var allowNotification by remember { mutableStateOf(allowNotification(context = context)) }
+
+    val postNotificationPermission =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            rememberPermissionState(permission = "android.permission.POST_NOTIFICATIONS")
+        }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    val workManager = WorkManager.getInstance(context)
+
+    val workRequest = PeriodicWorkRequestBuilder<NotificationWorker>(
+        repeatInterval = 1,
+        repeatIntervalTimeUnit = TimeUnit.DAYS,
+        flexTimeInterval = 5,
+        flexTimeIntervalUnit = TimeUnit.MINUTES
+    ).setBackoffCriteria(
+        backoffPolicy = BackoffPolicy.LINEAR,
+        duration = Duration.ofSeconds(15)
+    ).build()
+
+    fun workManager() {
+        if (postNotificationPermission.status.isGranted) {
+            workManager.enqueueUniquePeriodicWork(
+                "NotificationWork",
+                ExistingPeriodicWorkPolicy.KEEP,
+                workRequest
+            )
+            workManager.getWorkInfosForUniqueWorkLiveData("NotificationWork")
+                .observe(lifecycleOwner) {
+                    it.forEach { workInfo ->
+                        Log.d("EarthquakeScreen", "${workInfo.state}")
+                    }
+                }
+        } else {
+            workManager.cancelUniqueWork("NotificationWork")
+        }
+    }
+
+    LaunchedEffect(key1 = true) {
+        if (!postNotificationPermission.status.isGranted) {
+            postNotificationPermission.launchPermissionRequest()
+        }
+    }
 
     when {
         openExitAlertDialog.value -> {
@@ -154,11 +217,14 @@ fun EarthquakeScreen(
             AlertDialogExample(
                 onDismissRequest = {
                     openLanguageAlertDialog.value = false
-                    isTurkish = !isTurkish
-                    saveIsTurkish(
-                        isTurkish = !isTurkish(context = context),
-                        context = context
-                    )
+                    if (!isTurkish(context = context)) {
+                        isTurkish = !isTurkish
+                        saveIsTurkish(
+                            isTurkish = !isTurkish(context = context),
+                            context = context
+                        )
+                    }
+
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         context.getSystemService(LocaleManager::class.java)
                             .applicationLocales = LocaleList.forLanguageTags("tr")
@@ -170,11 +236,14 @@ fun EarthquakeScreen(
                 },
                 onConfirmation = {
                     openLanguageAlertDialog.value = false
-                    isTurkish = !isTurkish
-                    saveIsTurkish(
-                        isTurkish = !isTurkish(context = context),
-                        context = context
-                    )
+                    if (isTurkish(context = context)) {
+                        isTurkish = !isTurkish
+                        saveIsTurkish(
+                            isTurkish = !isTurkish(context = context),
+                            context = context
+                        )
+                    }
+
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         context.getSystemService(LocaleManager::class.java)
                             .applicationLocales = LocaleList.forLanguageTags("en")
@@ -200,9 +269,29 @@ fun EarthquakeScreen(
 
         openNotificationAlertDialog.value -> {
             AlertDialogExample(
-                onDismissRequest = { openNotificationAlertDialog.value = false },
+                onDismissRequest = {
+                    openNotificationAlertDialog.value = false
+                    if (allowNotification(context = context)) {
+                        allowNotification = !allowNotification
+                        saveAllowNotification(
+                            allowNotification = !allowNotification(context = context),
+                            context = context
+                        )
+                    }
+
+                    workManager.cancelUniqueWork("NotificationWork")
+                },
                 onConfirmation = {
                     openNotificationAlertDialog.value = false
+                    if (!allowNotification(context = context)) {
+                        allowNotification = !allowNotification
+                        saveAllowNotification(
+                            allowNotification = !allowNotification(context = context),
+                            context = context
+                        )
+                    }
+
+                    workManager()
                 },
                 dialogTitle = UIText.StringResource(R.string.notification).likeString(),
                 dialogText = UIText.StringResource(R.string.do_you_want_to_receive_notifications)
@@ -406,8 +495,22 @@ fun EarthquakeScreen(
                         }
                     }
                 },
+                onAllowNotificationUpdated = {
+                    allowNotification = !allowNotification
+                    saveAllowNotification(
+                        allowNotification = !allowNotification(context = context),
+                        context = context
+                    )
+
+                    if (allowNotification == true) {
+                        workManager()
+                    } else {
+                        workManager.cancelUniqueWork("NotificationWork")
+                    }
+                },
                 isDMYorN = isDMYorN,
-                isTurkish = isTurkish
+                isTurkish = isTurkish,
+                allowNotification = allowNotification
             )
         }
 

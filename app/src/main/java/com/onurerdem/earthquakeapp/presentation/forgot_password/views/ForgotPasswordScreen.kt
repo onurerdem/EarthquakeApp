@@ -61,7 +61,7 @@ fun ForgotPasswordScreen(
             ) {
 
                 NormalTextComponent(value = UIText.StringResource(R.string.hello).likeString(), context = context)
-                HeadingTextComponent(value = "Şifrenizi yenileyebilirsiniz.", context = context)
+                HeadingTextComponent(value = UIText.StringResource(R.string.you_can_reset_your_password).likeString(), context = context)
                 Spacer(modifier = Modifier.height(20.dp))
 
                 MyTextFieldComponent(labelValue = UIText.StringResource(R.string.email).likeString(),

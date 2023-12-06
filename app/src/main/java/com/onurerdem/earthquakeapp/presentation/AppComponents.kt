@@ -27,6 +27,8 @@ import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Nightlight
+import androidx.compose.material.icons.filled.NotificationsActive
+import androidx.compose.material.icons.filled.NotificationsOff
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -570,8 +572,10 @@ fun NavigationDrawerBody(
     onThemeUpdated: () -> Unit,
     onDateFormatUpdated: () -> Unit,
     onLanguageUpdated: () -> Unit,
+    onAllowNotificationUpdated: () -> Unit,
     isDMYorN: Boolean = false,
-    isTurkish: Boolean = false
+    isTurkish: Boolean = false,
+    allowNotification: Boolean = true
 ) {
     LazyColumn(
         modifier = Modifier
@@ -614,6 +618,42 @@ fun NavigationDrawerBody(
                     NavigationItemRow(item = it, onNavigationItemClicked, darkTheme)
 
                     when {
+                        it.itemId == "languageSetting" -> {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .align(Alignment.CenterEnd)
+                                    .padding(end = 16.dp)
+                            ) {
+                                EarthquakeAppTheme(darkTheme = darkTheme) {
+                                    LanguageSwitcher(
+                                        size = 36.dp,
+                                        padding = 5.dp,
+                                        onClick = onLanguageUpdated,
+                                        isTurkish = isTurkish
+                                    )
+                                }
+                            }
+                        }
+
+                        it.itemId == "notificationSetting" -> {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .align(Alignment.CenterEnd)
+                                    .padding(end = 16.dp)
+                            ) {
+                                EarthquakeAppTheme(darkTheme = darkTheme) {
+                                    NotificationSwitcher(
+                                        size = 36.dp,
+                                        padding = 5.dp,
+                                        onClick = onAllowNotificationUpdated,
+                                        allowNotification = allowNotification
+                                    )
+                                }
+                            }
+                        }
+
                         it.itemId == "themeSetting" -> {
                             Box(
                                 modifier = Modifier
@@ -645,24 +685,6 @@ fun NavigationDrawerBody(
                                         padding = 5.dp,
                                         onClick = onDateFormatUpdated,
                                         isDMYorN = isDMYorN
-                                    )
-                                }
-                            }
-                        }
-
-                        it.itemId == "languageSetting" -> {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                                    .align(Alignment.CenterEnd)
-                                    .padding(end = 16.dp)
-                            ) {
-                                EarthquakeAppTheme(darkTheme = darkTheme) {
-                                    LanguageSwitcher(
-                                        size = 36.dp,
-                                        padding = 5.dp,
-                                        onClick = onLanguageUpdated,
-                                        isTurkish = isTurkish
                                     )
                                 }
                             }
@@ -960,6 +982,88 @@ fun LanguageSwitcher(
                     imageVector = Icons.Default.Language,
                     contentDescription = UIText.StringResource(R.string.theme_icon).likeString(),
                     tint = if (isTurkish) MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.secondaryContainer
+                )
+            }
+        }
+    }
+}
+
+fun saveAllowNotification(allowNotification: Boolean, context: Context) {
+    val sharedPreferences = context.getSharedPreferences("ThemePreferences", Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
+    editor.putBoolean("allowNotification", allowNotification)
+    editor.apply()
+}
+
+fun allowNotification(context: Context): Boolean {
+    val sharedPreferences = context.getSharedPreferences("ThemePreferences", Context.MODE_PRIVATE)
+    return sharedPreferences.getBoolean("allowNotification", false)
+}
+
+@Composable
+fun NotificationSwitcher(
+    size: Dp = 150.dp,
+    iconSize: Dp = size / 3,
+    padding: Dp = 10.dp,
+    borderWidth: Dp = 1.dp,
+    parentShape: Shape = CircleShape,
+    toggleShape: Shape = CircleShape,
+    animationSpec: AnimationSpec<Dp> = tween(durationMillis = 300),
+    onClick: () -> Unit,
+    allowNotification: Boolean = false
+) {
+    val offset by animateDpAsState(
+        targetValue = if (allowNotification) 0.dp else size,
+        animationSpec = animationSpec
+    )
+
+    Box(modifier = Modifier
+        .width(size * 2)
+        .height(size)
+        .clip(shape = parentShape)
+        .clickable { onClick() }
+        .background(MaterialTheme.colorScheme.secondaryContainer)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(size)
+                .offset(x = offset)
+                .padding(all = padding)
+                .clip(shape = toggleShape)
+                .background(MaterialTheme.colorScheme.primary)
+        ) {}
+        Row(
+            modifier = Modifier
+                .border(
+                    border = BorderStroke(
+                        width = borderWidth,
+                        color = MaterialTheme.colorScheme.primary
+                    ),
+                    shape = parentShape
+                )
+        ) {
+            Box(
+                modifier = Modifier.size(size),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    modifier = Modifier.size(iconSize),
+                    imageVector = Icons.Default.NotificationsActive,
+                    contentDescription = UIText.StringResource(R.string.theme_icon).likeString(),
+                    tint = if (allowNotification) MaterialTheme.colorScheme.secondaryContainer
+                    else MaterialTheme.colorScheme.primary
+                )
+            }
+            Box(
+                modifier = Modifier.size(size),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    modifier = Modifier.size(iconSize),
+                    imageVector = Icons.Default.NotificationsOff,
+                    contentDescription = UIText.StringResource(R.string.theme_icon).likeString(),
+                    tint = if (allowNotification) MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.secondaryContainer
                 )
             }
