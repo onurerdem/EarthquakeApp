@@ -1,3 +1,105 @@
 <resources>
-    <string name="app_name">EarthquakeApp</string>
+    <string name="app_name">Earthquake App</string>
+
+    <!-- OnboardingScreen -->
+    <string name="earthquake_information">Earthquake Information</string>
+    <string name="notifications_ready">Notifications Ready</string>
+    <string name="onboarding_descripton">Welcome! With our application, you can access earthquake information that occurred all over Turkey.</string>
+    <string name="onboarding_descripton2">With our application, you can review earthquake data in detail and see earthquakes on the map.</string>
+    <string name="onboarding_descripton3">You can review the data of new earthquakes by choosing to receive notifications with our application.</string>
+
+    <!-- RegisterScreen, EarthquakeScreen -->
+    <string name="are_you_sure_you_want_to_quit">Are you sure you want to quit?</string> <!-- RegisterScreen, EarthquakeScreen -->
+    <string name="yes">Yes</string> <!-- RegisterScreen, EarthquakeScreen -->
+    <string name="no">No</string> <!-- RegisterScreen, EarthquakeScreen -->
+    <string name="warning">Warning</string>
+    <string name="are_you_sure_you_want_to_start">Are you sure you want to start?</string>
+    <string name="back">Back</string>
+    <string name="next">Next</string>
+    <string name="get_started">Get Started</string>
+
+    <!-- RegisterScreen -->
+    <string name="hello">Hello,</string> <!-- ForgotPasswordScreen -->
+    <string name="register">Register.</string>
+    <string name="name">Name</string>
+    <string name="surname">Surname</string>
+    <string name="email">Email</string> <!-- LoginScreen, ForgotPasswordScreen -->
+    <string name="password">Password</string> <!-- LoginScreen -->
+    <string name="register_button">Register</string>
+
+    <!-- LoginScreen -->
+    <string name="login">Login</string> <!-- AppComponents -->
+    <string name="welcome_back">Welcome back.</string>
+    <string name="i_forgot_my_password">I forgot my password.</string>
+
+    <!-- ForgotPasswordScreen -->
+    <string name="reset_password">Reset password</string>
+    <string name="you_can_reset_your_password">You can reset your password.</string>
+
+    <!-- TermsAndConditionsScreen -->
+    <string name="terms_of_use">Terms of use</string> <!-- AppComponents -->
+
+    <!-- EarthquakeScreen -->
+    <string name="are_you_sure_you_want_to_log_out">Are you sure you want to log out?</string>
+    <string name="language">Language</string>
+    <string name="you_can_choose_the_language_you_want_to_use">You can choose the language you want to use.</string>
+    <string name="english">English</string>
+    <string name="turkce">Türkçe</string>
+    <string name="notification">Notification</string>
+    <string name="do_you_want_to_receive_notifications">Do you want to receive notifications?</string>
+    <string name="application_format">Application Format</string>
+    <string name="you_can_choose_the_application_format_you_want_to_use">You can choose the application format you want to use.</string>
+    <string name="dark">Dark</string>
+    <string name="light">Light</string>
+    <string name="date_format">Date Format</string>
+    <string name="you_can_choose_the_date_format_you_want_to_use">You can choose the date format you want to use.</string>
+    <string name="day_month_year">Day-Month-Year</string>
+    <string name="month_day_year">Month-Day-Year</string>
+    <string name="earthquakes">Earthquakes</string>
+    <string name="city_etc_search">City etc. search…</string>
+    <string name="search_icon">Search icon.</string>
+    <string name="close_icon">Close icon.</string>
+    <string name="language_setting">language setting</string>
+    <string name="notification_setting">Notification Setting</string>
+    <string name="application_sormat_setting">Application Format Setting</string>
+    <string name="date_format_setting">Date Format Setting</string>
+
+    <!-- EarthquakeListRow -->
+    <string name="_km"> km</string> <!-- EarthquakeDetailListRow --> <!-- EarthquakeDetailScreen -->
+    <string name="date">Date: </string> <!-- EarthquakeDetailScreen -->
+    <string name="_hour"> Hour:</string> <!-- EarthquakeDetailScreen -->
+    <string name="magnitude">Magnitude: </string>
+    <string name="depth">Depth: </string>
+
+    <!-- EarthquakeDetailScreen -->
+    <string name="location_point_of_the_earthquake">Location Point Of The Earthquake:</string>
+    <string name="details_of_the_earthquake">Details Of The Earthquake:</string>
+    <string name="earthquake_magnitude">Earthquake magnitude: </string>
+    <string name="earthquake_depth">Earthquake depth: </string>
+    <string name="population_of_the_city">Population Of The City: </string>
+    <string name="cities_close_to_the_earthquake">Cities Close To The Earthquake:</string>
+    <string name="airports_close_to_the_earthquake">Airports Close To The Earthquake:</string>
+
+    <!-- Alert Dialog -->
+    <string name="icon">Icon</string>
+
+    <!-- AppComponents -->
+    <string name="hide_password">Hide password</string>
+    <string name="by_continuing_you_agree_that">By continuing you agree that:</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="and">And</string>
+    <string name="or">Or</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="dont_have_an_account_yet">Don\'t have an account yet?</string>
+    <string name="menu">Menu</string>
+    <string name="log_out">Log out</string>
+    <string name="email_">Email:</string>
+    <string name="application_drawer">Application Drawer</string>
+    <string name="settings">Settings</string>
+    <string name="capital_settings">SETTİNGS</string>
+    <string name="theme_icon">Theme Icon</string>
+    <string name="latest_information">Latest Information</string>
+    <string name="exit">Exit</string>
+    <string name="earthquake_information_provider">"Earthquake information provider: "</string>
+    <string name="show_password">Show password</string>
 </resources>

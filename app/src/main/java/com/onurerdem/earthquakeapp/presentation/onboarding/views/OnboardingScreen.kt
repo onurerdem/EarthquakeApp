@@ -54,6 +54,7 @@ import com.onurerdem.earthquakeapp.R
 import com.onurerdem.earthquakeapp.presentation.AlertDialogExample
 import com.onurerdem.earthquakeapp.presentation.MainActivity
 import com.onurerdem.earthquakeapp.presentation.Screen
+import com.onurerdem.earthquakeapp.presentation.UIText
 import com.onurerdem.earthquakeapp.presentation.onboarding.OnboardingViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -73,15 +74,15 @@ fun OnboardingScreen(
         R.drawable.earthquake3
     )
     val titles = listOf(
-        "Deprem Bilgileri",
-        "En Güncel Bilgiler",
-        "Bildirimler Hazır"
+        UIText.StringResource(R.string.earthquake_information).likeString(),
+        UIText.StringResource(R.string.latest_information).likeString(),
+        UIText.StringResource(R.string.notifications_ready).likeString()
     )
 
     val descriptions = listOf(
-        "Hoş geldiniz! Uygulamamızla Türkiye'nin dört bir yanında meydana gelen deprem bilgilerine erişebilirsiniz.",
-        "Uygulamamızla, deprem verilerini detaylarıyla birlikte inceleyebilir, depremleri harita üzerinde görebilirsiniz.",
-        "Uygulamamızla bildirimler almayı tercih ederek yeni depremlerin verilerini inceleyebilirisiniz."
+        UIText.StringResource(R.string.onboarding_descripton).likeString(),
+        UIText.StringResource(R.string.onboarding_descripton2).likeString(),
+        UIText.StringResource(R.string.onboarding_descripton3).likeString()
     )
     val pagerState = rememberPagerState(
         initialPage = 0,
@@ -104,10 +105,16 @@ fun OnboardingScreen(
                     openAlertDialog.value = false
                     activity?.finish()
                 },
-                dialogTitle = "Çıkış",
-                dialogText = "Çıkmak istediğinize emin misiniz?",
+                dialogTitle = UIText.StringResource(R.string.exit).likeString(),
+                dialogText = UIText.StringResource(R.string.are_you_sure_you_want_to_quit).likeString(),
                 icon = Icons.Default.ExitToApp,
-                iconContentColor = Color.Red
+                iconContentColor = Color.Red,
+                confirmButtonText = UIText.StringResource(R.string.yes).likeString(),
+                dismissButtonText = UIText.StringResource(R.string.no).likeString(),
+                dismissButtonColor = Color.Red,
+                confirmButtonIcon = null,
+                dismissButtonIcon = null,
+                context = context
             )
         }
     }
@@ -239,10 +246,16 @@ fun ButtonsSection(
                     navController.popBackStack()
                     navController.navigate(Screen.RegisterScreen.route)
                 },
-                dialogTitle = "Uyarı",
-                dialogText = "Başlamak istediğinize emin misiniz?",
+                dialogTitle = UIText.StringResource(R.string.warning).likeString(),
+                dialogText = UIText.StringResource(R.string.are_you_sure_you_want_to_start).likeString(),
                 icon = Icons.Default.Warning,
-                iconContentColor = Color.Red
+                iconContentColor = Color.Red,
+                confirmButtonText = UIText.StringResource(R.string.yes).likeString(),
+                dismissButtonText = UIText.StringResource(R.string.no).likeString(),
+                dismissButtonColor = Color.Red,
+                confirmButtonIcon = null,
+                dismissButtonIcon = null,
+                context = context
             )
         }
     }
@@ -254,7 +267,7 @@ fun ButtonsSection(
     ) {
         if (pagerState.currentPage != 0) {
             Text(
-                text = "Back",
+                text = UIText.StringResource(R.string.back).likeString(),
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .clickable {
@@ -270,7 +283,7 @@ fun ButtonsSection(
         }
         if (pagerState.currentPage != 2) {
             Text(
-                text = "Next",
+                text = UIText.StringResource(R.string.next).likeString(),
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .clickable {
@@ -296,7 +309,7 @@ fun ButtonsSection(
                 )
             ) {
                 Text(
-                    text = "Get Started",
+                    text = UIText.StringResource(R.string.get_started).likeString(),
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
                     color = if (isSystemInDarkTheme()) Color.White else Color.Black

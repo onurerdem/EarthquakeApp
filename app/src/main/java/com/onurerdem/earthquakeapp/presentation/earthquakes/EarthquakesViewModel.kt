@@ -1,11 +1,16 @@
 package com.onurerdem.earthquakeapp.presentation.earthquakes
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import com.google.firebase.auth.FirebaseAuth
 import com.onurerdem.earthquakeapp.domain.model.Earthquake
 import com.onurerdem.earthquakeapp.domain.use_case.get_earthquakes.GetEarthquakeUseCase
+import com.onurerdem.earthquakeapp.presentation.Screen
 import com.onurerdem.earthquakeapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -22,13 +27,19 @@ class EarthquakesViewModel @Inject constructor(
     private val getEarthquakeUseCase: GetEarthquakeUseCase
 ) : ViewModel() {
     private val _state = mutableStateOf<EarthquakesState>(EarthquakesState())
-    val state : State<EarthquakesState> = _state
+    val state: State<EarthquakesState> = _state
 
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean>
         get() = _isRefreshing.asStateFlow()
 
-    private var job : Job? = null
+    private var job: Job? = null
+
+    private val TAG = EarthquakesViewModel::class.simpleName
+
+    val isUserLoggedIn: MutableLiveData<Boolean> = MutableLiveData()
+
+    val emailId: MutableLiveData<String> = MutableLiveData()
 
     init {
         getEarthquakes("")
@@ -38,7 +49,7 @@ class EarthquakesViewModel @Inject constructor(
         job?.cancel()
 
         job = getEarthquakeUseCase.executeGetEarthquakes(search).onEach {
-            when(it) {
+            when (it) {
                 is Resource.Success -> {
                     if (search.isBlank() || search.length < 3) {
                         _state.value = EarthquakesState(earthquakes = it.data ?: emptyList())
@@ -57,7 +68,9 @@ class EarthquakesViewModel @Inject constructor(
                 }
 
                 is Resource.Error -> {
-                    _state.value = EarthquakesState(error = it.message ?: "Error!")
+                    _state.value = EarthquakesState(
+                        error = it.message ?: "Error!"
+                    )
                 }
 
                 is Resource.Loading -> {
@@ -70,9 +83,46 @@ class EarthquakesViewModel @Inject constructor(
     }
 
     fun onEvent(event: EarthquakesEvent) {
-        when(event) {
+        when (event) {
             is EarthquakesEvent.Search -> {
                 getEarthquakes(event.searchString)
+            }
+        }
+    }
+
+    fun logout(navController: NavController) {
+
+        val firebaseAuth = FirebaseAuth.getInstance()
+
+        firebaseAuth.signOut()
+
+        val authStateListener = FirebaseAuth.AuthStateListener {
+            if (it.currentUser == null) {
+                Log.d(TAG, "Inside sign outsuccess")
+                navController.navigate(Screen.RegisterScreen.route)
+            } else {
+                Log.d(TAG, "Inside sign out is not complete")
+            }
+        }
+
+        firebaseAuth.addAuthStateListener(authStateListener)
+
+    }
+
+    fun checkForActiveSession() {
+        if (FirebaseAuth.getInstance().currentUser != null) {
+            Log.d(TAG, "Valid session")
+            isUserLoggedIn.value = true
+        } else {
+            Log.d(TAG, "User is not logged in")
+            isUserLoggedIn.value = false
+        }
+    }
+
+    fun getUserData() {
+        FirebaseAuth.getInstance().currentUser?.also {
+            it.email?.also { email ->
+                emailId.value = email
             }
         }
     }

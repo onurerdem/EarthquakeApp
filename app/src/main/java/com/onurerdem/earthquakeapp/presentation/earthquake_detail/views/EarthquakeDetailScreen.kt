@@ -1,7 +1,7 @@
 package com.onurerdem.earthquakeapp.presentation.earthquake_detail.views
 
+import android.content.Context
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,23 +33,29 @@ import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.MarkerInfoWindow
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
+import com.onurerdem.earthquakeapp.R
+import com.onurerdem.earthquakeapp.presentation.SharedPreferencesManager
+import com.onurerdem.earthquakeapp.presentation.UIText
 import com.onurerdem.earthquakeapp.presentation.earthquake_detail.EarthquakeDetailViewModel
 import com.onurerdem.earthquakeapp.presentation.formatDateForTurkishLocale
+import com.onurerdem.earthquakeapp.presentation.isDarkThemeMode
 import kotlinx.coroutines.launch
 import java.util.Locale
 
 @OptIn(MapsComposeExperimentalApi::class)
 @Composable
 fun EarthquakeDetailScreen(
-    earthquakeDetailViewModel: EarthquakeDetailViewModel = hiltViewModel()
+    earthquakeDetailViewModel: EarthquakeDetailViewModel = hiltViewModel(),
+    context: Context
 ) {
     val state = earthquakeDetailViewModel.state.value
 
     val cameraPositionState = rememberCameraPositionState()
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White),
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(if (isDarkThemeMode(context = context)) Color.DarkGray else Color.White),
         contentAlignment = Alignment.Center
     ) {
         state.earthquake?.let {
@@ -58,10 +64,11 @@ fun EarthquakeDetailScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Depremin Konum Noktası:",
+                    text = UIText.StringResource(R.string.location_point_of_the_earthquake)
+                        .likeString(),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(8.dp),
-                    color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                    color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
                     style = MaterialTheme.typography.subtitle1,
                     fontWeight = FontWeight.Bold
                 )
@@ -79,7 +86,7 @@ fun EarthquakeDetailScreen(
                         )
 
                         val scope = rememberCoroutineScope()
-                        MapEffect(key1 = it) {map ->
+                        MapEffect(key1 = it) { map ->
                             map.setOnMapLoadedCallback {
                                 scope.launch {
                                     cameraPositionState.animate(
@@ -100,10 +107,11 @@ fun EarthquakeDetailScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Depremin Ayrıntıları:",
+                        text = UIText.StringResource(R.string.details_of_the_earthquake)
+                            .likeString(),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
-                        color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                        color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
                         style = MaterialTheme.typography.subtitle1,
                         fontWeight = FontWeight.Bold
                     )
@@ -112,76 +120,93 @@ fun EarthquakeDetailScreen(
                         text = it.title,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
-                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
+                        color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
                     )
 
                     Text(
-                        text = "Tarih: " + formatDateForTurkishLocale(date = it.date.substring(0, 10)) + "," + " Saat:" + it.date.substring(10, 19),
+                        text = UIText.StringResource(R.string.date)
+                            .likeString() + " " + formatDateForTurkishLocale(
+                            date = it.date.substring(0, 10),
+                            sharedPreferencesManager = SharedPreferencesManager(context = context)
+                        ) + ", " + UIText.StringResource(R.string._hour)
+                            .likeString() + " " + it.date.substring(10, 19),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
-                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
+                        color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
                     )
 
                     Text(
-                        text = "Deprem bilgi sağlayıcı: " + it.provider.replaceFirstChar {
+                        text = UIText.StringResource(R.string.earthquake_information_provider)
+                            .likeString() + " " + it.provider.replaceFirstChar {
                             if (it.isLowerCase()) it.titlecase(
                                 Locale.ROOT
                             ) else it.toString()
                         },
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
-                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
+                        color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
                     )
 
                     Text(
-                        text = "Deprem büyüklüğü: " + it.mag.toString(),
+                        text = UIText.StringResource(R.string.earthquake_magnitude)
+                            .likeString() + " " + it.mag.toString(),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
-                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
+                        color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
                     )
 
                     Text(
-                        text = "Deprem derinliği: " + it.depth.toString() + " km",
+                        text = UIText.StringResource(R.string.earthquake_magnitude)
+                            .likeString() + " " + it.depth.toString() + " " + UIText.StringResource(R.string._km)
+                            .likeString(),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
-                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
+                        color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
                     )
 
                     Text(
-                        text = "Şehrin nüfusu: " + it.population.toString(),
+                        text = UIText.StringResource(R.string.population_of_the_city)
+                            .likeString() + " " + it.population.toString(),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
-                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
+                        color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
                     )
 
                     Column {
                         Text(
-                            text = "Depreme Yakın Şehirler:",
+                            text = UIText.StringResource(R.string.cities_close_to_the_earthquake).likeString(),
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(8.dp),
-                            color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                            color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
                             style = MaterialTheme.typography.subtitle1,
                             fontWeight = FontWeight.Bold
                         )
 
                         LazyRow(modifier = Modifier.fillMaxWidth()) {
-                            items(state.earthquake.closestCities) {closestCities ->
-                                EarthquakeDetailListRow(closestCity = closestCities)
+                            items(state.earthquake.closestCities) { closestCities ->
+                                EarthquakeDetailListRow(
+                                    closestCity = closestCities,
+                                    context = context
+                                )
                             }
                         }
 
                         Text(
-                            text = "Depreme Yakın Havalimanları:",
+                            text = UIText.StringResource(R.string.airports_close_to_the_earthquake).likeString(),
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(8.dp),
-                            color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                            color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
                             style = MaterialTheme.typography.subtitle1,
                             fontWeight = FontWeight.Bold
                         )
 
-                        LazyRow(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
-                            items(state.earthquake.airports) {airports ->
-                                EarthquakeDetailListRow(airports = airports)
+                        LazyRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 8.dp)
+                        ) {
+                            items(state.earthquake.airports) { airports ->
+                                EarthquakeDetailListRow(airports = airports, context = context)
                             }
                         }
                     }
@@ -198,7 +223,7 @@ fun EarthquakeDetailScreen(
                     .fillMaxWidth()
                     .padding(14.dp)
                     .align(Alignment.Center)
-                )
+            )
         }
 
         if (state.isLoading) {

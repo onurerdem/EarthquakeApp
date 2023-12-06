@@ -1,7 +1,6 @@
 package com.onurerdem.earthquakeapp.presentation.forgot_password.views
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -29,8 +28,10 @@ import com.onurerdem.earthquakeapp.presentation.MainActivity
 import com.onurerdem.earthquakeapp.presentation.MyTextFieldComponent
 import com.onurerdem.earthquakeapp.presentation.NormalTextComponent
 import com.onurerdem.earthquakeapp.presentation.Screen
+import com.onurerdem.earthquakeapp.presentation.UIText
 import com.onurerdem.earthquakeapp.presentation.forgot_password.ForgotPasswordEvent
 import com.onurerdem.earthquakeapp.presentation.forgot_password.ForgotPasswordViewModel
+import com.onurerdem.earthquakeapp.presentation.isDarkThemeMode
 import kotlinx.coroutines.launch
 
 @Composable
@@ -49,21 +50,21 @@ fun ForgotPasswordScreen(
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
+                .background(if (isDarkThemeMode(context = context)) Color.DarkGray else Color.White)
                 .padding(28.dp)
         ) {
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
+                    .background(if (isDarkThemeMode(context = context)) Color.DarkGray else Color.White)
             ) {
 
-                NormalTextComponent(value = "Merhaba")
-                HeadingTextComponent(value = "Şifrenizi yenileyebilirsiniz.")
+                NormalTextComponent(value = UIText.StringResource(R.string.hello).likeString(), context = context)
+                HeadingTextComponent(value = UIText.StringResource(R.string.you_can_reset_your_password).likeString(), context = context)
                 Spacer(modifier = Modifier.height(20.dp))
 
-                MyTextFieldComponent(labelValue = "Email",
+                MyTextFieldComponent(labelValue = UIText.StringResource(R.string.email).likeString(),
                     painterResource(id = R.drawable.baseline_mail_outline_24),
                     onTextChanged = {
                         scope.launch {
@@ -71,7 +72,8 @@ fun ForgotPasswordScreen(
                         }
                     },
                     errorStatus = forgotPasswordViewModel.forgotPasswordState.value.emailError,
-                    screen = Screen.ForgotPasswordScreen
+                    screen = Screen.ForgotPasswordScreen,
+                    context = context
                 )
 
                 if (!forgotPasswordViewModel.errorEmailText.isNullOrEmpty() && !forgotPasswordViewModel.errorEmailText.isNullOrBlank() && forgotPasswordViewModel.errorEmailText != "") {
@@ -81,7 +83,7 @@ fun ForgotPasswordScreen(
                 Spacer(modifier = Modifier.height(40.dp))
 
                 ButtonComponent(
-                    value = "Şifreyi yenile",
+                    value = UIText.StringResource(R.string.reset_password).likeString(),
                     onButtonClicked = {
                         scope.launch {
                             forgotPasswordViewModel.onEvent(ForgotPasswordEvent.ResetPasswordButtonClicked, navController, context)

@@ -1,6 +1,6 @@
 package com.onurerdem.earthquakeapp.presentation.earthquake_detail.views
 
-import androidx.compose.foundation.isSystemInDarkTheme
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,13 +15,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.onurerdem.earthquakeapp.R
 import com.onurerdem.earthquakeapp.data.remote.dto.AirportX
 import com.onurerdem.earthquakeapp.data.remote.dto.ClosestCityX
+import com.onurerdem.earthquakeapp.presentation.UIText
+import com.onurerdem.earthquakeapp.presentation.isDarkThemeMode
 
 @Composable
 fun EarthquakeDetailListRow(
     closestCity: ClosestCityX? = null,
-    airports: AirportX? = null
+    airports: AirportX? = null,
+    context: Context
 ) {
     Row(
         modifier = Modifier
@@ -37,7 +41,7 @@ fun EarthquakeDetailListRow(
                     text = closestCity.name,
                     style = MaterialTheme.typography.body2,
                     overflow = TextOverflow.Ellipsis,
-                    color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                    color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
                     textAlign = TextAlign.Start
                 )
             }
@@ -47,17 +51,17 @@ fun EarthquakeDetailListRow(
                     text = closestCity.population.toString(),
                     style = MaterialTheme.typography.body2,
                     overflow = TextOverflow.Ellipsis,
-                    color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                    color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
                     textAlign = TextAlign.Start
                 )
             }
 
             if (closestCity != null) {
                 Text(
-                    text = closestCity.distance.toString() + " km",
+                    text = closestCity.distance.toString() + " " + UIText.StringResource(R.string._km).likeString(),
                     style = MaterialTheme.typography.body2,
                     overflow = TextOverflow.Ellipsis,
-                    color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                    color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
                     textAlign = TextAlign.Start
                 )
             }
@@ -71,17 +75,17 @@ fun EarthquakeDetailListRow(
                     text = airports.name,
                     style = MaterialTheme.typography.body2,
                     overflow = TextOverflow.Ellipsis,
-                    color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                    color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
                     textAlign = TextAlign.Start
                 )
             }
 
             if (airports != null) {
                 Text(
-                    text = airports.distance.toString() + " km",
+                    text = airports.distance.toString() + " " + UIText.StringResource(R.string._km).likeString(),
                     style = MaterialTheme.typography.body2,
                     overflow = TextOverflow.Ellipsis,
-                    color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                    color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
                     textAlign = TextAlign.Start
                 )
             }

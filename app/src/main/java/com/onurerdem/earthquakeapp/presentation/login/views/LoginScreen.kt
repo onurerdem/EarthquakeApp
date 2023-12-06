@@ -1,7 +1,6 @@
 package com.onurerdem.earthquakeapp.presentation.login.views
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -32,6 +31,8 @@ import com.onurerdem.earthquakeapp.presentation.NormalTextComponent
 import com.onurerdem.earthquakeapp.presentation.PasswordTextFieldComponent
 import com.onurerdem.earthquakeapp.presentation.Screen
 import com.onurerdem.earthquakeapp.presentation.ClickableUnderLinedTextComponent
+import com.onurerdem.earthquakeapp.presentation.UIText
+import com.onurerdem.earthquakeapp.presentation.isDarkThemeMode
 import com.onurerdem.earthquakeapp.presentation.login.LoginEvent
 import com.onurerdem.earthquakeapp.presentation.login.LoginViewModel
 
@@ -50,27 +51,29 @@ fun LoginScreen(
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
+                .background(if (isDarkThemeMode(context = context)) Color.DarkGray else Color.White)
                 .padding(28.dp)
         ) {
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
+                    .background(if (isDarkThemeMode(context = context)) Color.DarkGray else Color.White)
             ) {
 
-                NormalTextComponent(value = "Giriş")
-                HeadingTextComponent(value = "Tekrar hoşgeldiniz.")
+                NormalTextComponent(value = UIText.StringResource(R.string.login).likeString(), context = context)
+                HeadingTextComponent(value = UIText.StringResource(R.string.welcome_back).likeString(), context = context)
                 Spacer(modifier = Modifier.height(20.dp))
 
-                MyTextFieldComponent(labelValue = "Email",
+                MyTextFieldComponent(
+                    labelValue = UIText.StringResource(R.string.email).likeString(),
                     painterResource(id = R.drawable.baseline_mail_outline_24),
                     onTextChanged = {
                         loginViewModel.onEvent(LoginEvent.EmailChanged(it), navController, context)
                     },
                     errorStatus = loginViewModel.loginState.value.emailError,
-                    screen = Screen.LoginScreen
+                    screen = Screen.LoginScreen,
+                    context = context
                 )
 
                 if (!loginViewModel.errorEmailText.isNullOrEmpty() && !loginViewModel.errorEmailText.isNullOrBlank() && loginViewModel.errorEmailText != "") {
@@ -78,12 +81,17 @@ fun LoginScreen(
                 }
 
                 PasswordTextFieldComponent(
-                    labelValue = "Şifre",
+                    labelValue = UIText.StringResource(R.string.password).likeString(),
                     painterResource(id = R.drawable.outline_lock_24),
                     onTextSelected = {
-                        loginViewModel.onEvent(LoginEvent.PasswordChanged(it), navController, context)
+                        loginViewModel.onEvent(
+                            LoginEvent.PasswordChanged(it),
+                            navController,
+                            context
+                        )
                     },
-                    errorStatus = loginViewModel.loginState.value.passwordError
+                    errorStatus = loginViewModel.loginState.value.passwordError,
+                    context = context
                 )
 
                 if (!loginViewModel.errorPasswordText.isNullOrEmpty() && !loginViewModel.errorPasswordText.isNullOrBlank() && loginViewModel.errorPasswordText != "") {
@@ -92,7 +100,7 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(40.dp))
                 ClickableUnderLinedTextComponent(
-                    value = "Şifremi unuttum.",
+                    value = UIText.StringResource(R.string.i_forgot_my_password).likeString(),
                     onClick = {
                         navController.navigate(Screen.ForgotPasswordScreen.route)
                     }
@@ -101,24 +109,32 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(40.dp))
 
                 ButtonComponent(
-                    value = "Giriş",
+                    value = UIText.StringResource(R.string.login).likeString(),
                     onButtonClicked = {
-                        loginViewModel.onEvent(LoginEvent.LoginButtonClicked, navController, context)
+                        loginViewModel.onEvent(
+                            LoginEvent.LoginButtonClicked,
+                            navController,
+                            context
+                        )
                     },
                     isEnabled = loginViewModel.allValidationsPassed.value
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                DividerTextComponent()
+                DividerTextComponent(context = context)
 
-                ClickableLoginTextComponent(tryingToLogin = false, onTextSelected = {
-                    navController.navigate(Screen.RegisterScreen.route)
-                })
+                ClickableLoginTextComponent(
+                    tryingToLogin = false,
+                    onTextSelected = {
+                        navController.navigate(Screen.RegisterScreen.route)
+                    },
+                    context = context
+                )
             }
         }
 
-        if(loginViewModel.loginInProgress.value) {
+        if (loginViewModel.loginInProgress.value) {
             CircularProgressIndicator()
         }
     }

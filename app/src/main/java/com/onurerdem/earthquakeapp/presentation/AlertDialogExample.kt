@@ -1,9 +1,8 @@
 package com.onurerdem.earthquakeapp.presentation
 
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
+import android.content.Context
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -12,8 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.onurerdem.earthquakeapp.R
 
 @Composable
 fun AlertDialogExample(
@@ -22,22 +23,30 @@ fun AlertDialogExample(
     dialogTitle: String,
     dialogText: String,
     icon: ImageVector,
-    iconContentColor: Color
+    iconContentColor: Color,
+    confirmButtonText: String,
+    dismissButtonText: String,
+    dismissButtonColor: Color,
+    confirmButtonIcon: ImageVector?,
+    dismissButtonIcon: ImageVector?,
+    context: Context
 ) {
     AlertDialog(
         icon = {
-            Icon(icon, contentDescription = "Simge")
+            Icon(icon, contentDescription = stringResource(R.string.icon))
         },
         title = {
             Text(
                 text = dialogTitle,
-                fontSize = 30.sp
+                fontSize = 30.sp,
+                color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
             )
         },
         text = {
             Text(
                 text = dialogText,
-                fontSize = 20.sp
+                fontSize = 20.sp,
+                color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
             )
         },
         onDismissRequest = {
@@ -49,8 +58,18 @@ fun AlertDialogExample(
                     onConfirmation()
                 }
             ) {
+                if (confirmButtonIcon != null) {
+                    Icon(
+                        imageVector = confirmButtonIcon,
+                        contentDescription = stringResource(R.string.icon),
+                        tint = if (isDarkThemeMode(context = context)) Color.White else Color.Black
+                    )
+                }
+
+                Spacer(modifier = Modifier.widthIn(8.dp))
+
                 Text(
-                    text = "Evet",
+                    text = confirmButtonText,
                     color = Color.Blue,
                     fontSize = 20.sp
                 )
@@ -62,14 +81,24 @@ fun AlertDialogExample(
                     onDismissRequest()
                 }
             ) {
+                if (dismissButtonIcon != null) {
+                    Icon(
+                        imageVector = dismissButtonIcon,
+                        contentDescription = stringResource(R.string.icon),
+                        tint = if (isDarkThemeMode(context = context)) Color.White else Color.Black
+                    )
+                }
+
+                Spacer(modifier = Modifier.widthIn(8.dp))
+
                 Text(
-                    text = "Hayır",
-                    color = Color.Red,
+                    text = dismissButtonText,
+                    color = dismissButtonColor,
                     fontSize = 20.sp
                 )
             }
         },
         iconContentColor = iconContentColor,
-        containerColor = if (isSystemInDarkTheme()) Color.Black else Color.White
+        containerColor = if (isDarkThemeMode(context = context)) Color.Black else Color.White
     )
 }

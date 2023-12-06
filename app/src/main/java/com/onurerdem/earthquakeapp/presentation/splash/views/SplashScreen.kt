@@ -3,7 +3,6 @@ package com.onurerdem.earthquakeapp.presentation.splash.views
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,6 +29,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.onurerdem.earthquakeapp.R
 import com.onurerdem.earthquakeapp.presentation.MainActivity
 import com.onurerdem.earthquakeapp.presentation.Screen
+import com.onurerdem.earthquakeapp.presentation.isDarkThemeMode
 import com.onurerdem.earthquakeapp.presentation.splash.SplashViewModel
 import kotlinx.coroutines.delay
 
@@ -64,7 +64,7 @@ fun SplashScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White),
+            .background(if (isDarkThemeMode(context = context)) Color.DarkGray else Color.White),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

@@ -33,7 +33,7 @@ class ForgotPasswordViewModel(): ViewModel() {
                 if (event.email.length >= 3 && !event.email.isNullOrEmpty() && !event.email.isNullOrBlank()) {
                     errorEmailText = ""
                 } else {
-                    errorEmailText = "Lütfen en az 3 karakter girin."
+                    errorEmailText = "Please enter at least 3 characters."
                 }
             }
 
@@ -71,8 +71,8 @@ class ForgotPasswordViewModel(): ViewModel() {
                     Log.d(TAG,"${it.isSuccessful}")
 
                     if(it.isSuccessful) {
-                        Toast.makeText(context, "Şifre yenileme işlemi için e-mail gönderildi.", Toast.LENGTH_LONG).show()
-                        Toast.makeText(context, "Lütfen spam veya gereksiz klasörünüzü kontrol edin.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "An e-mail has been sent for password reset.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Please check your spam or junk folder.", Toast.LENGTH_LONG).show()
                         forgotPasswordInProgress.value = false
                         navController.navigate(Screen.LoginScreen.route)
                     }
@@ -81,11 +81,8 @@ class ForgotPasswordViewModel(): ViewModel() {
         } catch (e: Exception) {
             Log.d(TAG,"Inside_forgotPassword_failure")
             Log.d(TAG, "Exception= ${e.localizedMessage}")
-            if ("${e.localizedMessage}" == "The email address is badly formatted.") {
-                Toast.makeText(context, "Lütfen e-posta adresinizi düzgün giriniz.", Toast.LENGTH_LONG).show()
-            } else {
-                Toast.makeText(context, "Şifre yenileme başarısız.", Toast.LENGTH_LONG).show()
-            }
+
+            Toast.makeText(context, "${e.localizedMessage}", Toast.LENGTH_LONG).show()
 
             forgotPasswordInProgress.value = false
         }
