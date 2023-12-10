@@ -1,7 +1,9 @@
 package com.onurerdem.earthquakeapp.presentation
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import android.view.View
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -47,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -68,10 +71,20 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
 import com.onurerdem.earthquakeapp.R
+import com.onurerdem.earthquakeapp.data.di.RetrofitObject
 import com.onurerdem.earthquakeapp.domain.model.NavigationItem
+import com.onurerdem.earthquakeapp.domain.model.NotificationData
+import com.onurerdem.earthquakeapp.domain.model.PushNotification
 import com.onurerdem.earthquakeapp.presentation.ui.theme.EarthquakeAppTheme
 import com.onurerdem.earthquakeapp.presentation.ui.theme.componentShapes
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun NormalTextComponent(value: String, context: Context) {
@@ -509,6 +522,14 @@ fun AppToolbar(
     )
 }
 
+@SuppressLint("StaticFieldLeak")
+var db = FirebaseFirestore.getInstance()
+var token = ""
+
+var auth = FirebaseAuth.getInstance()
+var documentReference = db.collection("Users").document()
+var collectionReference = db.collection("Users")
+
 @Composable
 fun NavigationDrawerHeader(value: String?, darkTheme: Boolean) {
     Box(
@@ -522,7 +543,7 @@ fun NavigationDrawerHeader(value: String?, darkTheme: Boolean) {
                 )
             )
             .fillMaxWidth()
-            .fillMaxHeight(0.23f)
+            .fillMaxHeight(0.55f)
             .padding(8.dp)
     ) {
         Column(
@@ -535,7 +556,7 @@ fun NavigationDrawerHeader(value: String?, darkTheme: Boolean) {
             LottieAnimation(
                 composition = composition,
                 iterations = LottieConstants.IterateForever,
-                modifier = Modifier.fillMaxSize(0.7f),
+                modifier = Modifier.fillMaxSize(0.4f),
                 alignment = Alignment.TopCenter
             )
 
@@ -560,7 +581,160 @@ fun NavigationDrawerHeader(value: String?, darkTheme: Boolean) {
                     fontWeight = FontWeight.Normal
                 )
             }
+
+            Spacer(modifier = Modifier.heightIn(4.dp))
+
+            Row {
+                NavigationDrawerText(
+                    title = "Yakınım: ",
+                    textUnit = 14.sp,
+                    color = Color.White,
+                    shadowColor = if (darkTheme) Color.Gray else Color.Black,
+                    fontStyle = FontStyle.Normal,
+                    fontWeight = FontWeight.Bold
+                )
+
+                val textValueEMail = remember {
+                    mutableStateOf("")
+                }
+                val textValueTitle = remember {
+                    mutableStateOf("")
+                }
+                val textValueMessage = remember {
+                    mutableStateOf("")
+                }
+                val localFocusManager = LocalFocusManager.current
+
+                val context = LocalContext.current
+
+                Column {
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(componentShapes.small),
+                        label = { Text(text = "Email") },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = Color.White,
+                            focusedLabelColor = Color.White,
+                            cursorColor = Color.White,
+                            backgroundColor = if (isDarkThemeMode(context = context)) Color.DarkGray else Color.Cyan,
+                            textColor = if (isDarkThemeMode(context = context)) Color.White else Color.Black
+                        ),
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        keyboardActions = KeyboardActions {
+                            localFocusManager.moveFocus(focusDirection = FocusDirection.Next)
+                        },
+                        singleLine = true,
+                        maxLines = 1,
+                        value = textValueEMail.value,
+                        onValueChange = {
+                            textValueEMail.value = it
+                        }
+                    )
+
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(componentShapes.small),
+                        label = { Text(text = "Title") },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = Color.White,
+                            focusedLabelColor = Color.White,
+                            cursorColor = Color.White,
+                            backgroundColor = if (isDarkThemeMode(context = context)) Color.DarkGray else Color.Cyan,
+                            textColor = if (isDarkThemeMode(context = context)) Color.White else Color.Black
+                        ),
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        keyboardActions = KeyboardActions {
+                            localFocusManager.moveFocus(focusDirection = FocusDirection.Next)
+                        },
+                        singleLine = true,
+                        maxLines = 1,
+                        value = textValueTitle.value,
+                        onValueChange = {
+                            textValueTitle.value = it
+                        }
+                    )
+
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(componentShapes.small),
+                        label = { Text(text = "Message") },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = Color.White,
+                            focusedLabelColor = Color.White,
+                            cursorColor = Color.White,
+                            backgroundColor = if (isDarkThemeMode(context = context)) Color.DarkGray else Color.Cyan,
+                            textColor = if (isDarkThemeMode(context = context)) Color.White else Color.Black
+                        ),
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions {
+                            localFocusManager.clearFocus()
+                            send(email = textValueEMail.value, title = textValueTitle.value, message = textValueMessage.value)
+                        },
+                        singleLine = true,
+                        maxLines = 1,
+                        value = textValueMessage.value,
+                        onValueChange = {
+                            textValueMessage.value = it
+                        }
+                    )
+                }
+            }
         }
+    }
+}
+
+fun getToken(email: String): String{
+    collectionReference.whereEqualTo("useremail", email)
+        .addSnapshotListener { value, e ->
+            //list.clear()
+            if (e != null) {
+                println("hata: " + e)
+            } else {
+                if (value != null) {
+                    if (!value.isEmpty) {
+                        val list = ArrayList<String>()
+                        list.clear()
+                        val documents = value.documents
+                        for (doc in documents) {
+                            doc.getString("token")?.let {
+                                list.add(it)
+                            }
+                        }
+                        token = list.get(0)
+                    }
+                }
+            }
+        }
+    return token
+}
+
+fun send(email: String, title: String, message: String) {
+    if (title.isNotEmpty() && message.isNotEmpty()) {
+        val data = NotificationData(title,message)
+        //val notification = PushNotification(data,"dnbNWZy4SoW02xmkvFBkSY:APA91bERvdZyGmvJsdxrQ3eyOHnc6BFHuVTx2a1NfVqmD_DGBLokphXcgyXu2uM8LrkZMukcl0mPBw7dTa_AOoW8W10Te4v5t2qJo__xArJHwkneZd_HLlTYhD3Ug27XTLDCFztyoHUz")
+        //val notification = PushNotification(data, token)
+        val notification = PushNotification(data, getToken(email))
+        /*println("token: " + token)
+        println("token5: " + getToken(email))*/
+        sendNotification(notification)
+    }
+}
+
+private fun sendNotification(pushNotification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
+    try {
+
+        val response = RetrofitObject.api.postNotification(pushNotification)
+        if (response.isSuccessful) {
+            println(response)
+        } else {
+            println(response.errorBody())
+        }
+
+    } catch (e : Exception) {
+        e.printStackTrace()
     }
 }
 

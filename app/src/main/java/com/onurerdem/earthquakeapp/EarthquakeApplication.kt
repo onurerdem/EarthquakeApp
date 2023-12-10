@@ -8,6 +8,9 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.work.Configuration
 import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
@@ -15,6 +18,8 @@ import androidx.work.WorkerParameters
 import com.onurerdem.earthquakeapp.presentation.NotificationWorker
 import dagger.hilt.android.HiltAndroidApp
 
+//Create Singleton instance of DataStore Preference
+val Context.dataStore : DataStore<Preferences> by preferencesDataStore(name = "LocalStore")
 @HiltAndroidApp
 class EarthquakeApplication : Application(), Configuration.Provider {
     @SuppressLint("ServiceCast")
