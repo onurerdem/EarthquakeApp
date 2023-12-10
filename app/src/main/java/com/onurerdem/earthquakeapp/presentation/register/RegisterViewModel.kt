@@ -7,6 +7,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import com.onurerdem.earthquakeapp.presentation.Screen
 import com.onurerdem.earthquakeapp.presentation.Validator
 
@@ -26,6 +28,10 @@ class RegisterViewModel : ViewModel() {
     var errorEmailText = ""
     var errorPasswordText = ""
     var errorPrivacyPolicyCheckBoxClickedText = ""
+
+    var auth = FirebaseAuth.getInstance()
+    var db = FirebaseFirestore.getInstance()
+    val dataMap = hashMapOf<String, String>()
 
     fun onEvent(event: RegisterEvent, navController: NavController, context: Context) {
         when (event) {
@@ -178,8 +184,18 @@ class RegisterViewModel : ViewModel() {
                     FirebaseAuth.getInstance().currentUser?.sendEmailVerification()
                     Toast.makeText(context, "Registration Successful. We have sent you an email to verify your email.", Toast.LENGTH_LONG).show()
                     Toast.makeText(context, "Please check your spam or junk folder.", Toast.LENGTH_LONG).show()
+                    val currentUser = auth.currentUser?.email.toString()
                     FirebaseAuth.getInstance().signOut()
                     navController.navigate(Screen.LoginScreen.route)
+
+                    val token = FirebaseMessaging.getInstance().token.addOnSuccessListener {
+                        dataMap.put("token",it)
+                        dataMap.put("useremail", currentUser)
+
+                        db.collection("Users").add(dataMap).addOnSuccessListener {
+                            //do some stuff
+                        }
+                    }
                 }
             }
             .addOnFailureListener {
