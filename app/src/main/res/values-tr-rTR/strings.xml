@@ -81,4 +81,7 @@
     <string name="capital_settings">AYARLAR</string>
     <string name="theme_icon">Biçim Simgesi</string>
     <string name="you_can_reset_your_password">Şifrenizi yenileyebilirsiniz.</string>
+    <string name="my_relative">Yakınım: </string>
+    <string name="title">Başlık</string>
+    <string name="message">İleti</string>
 </resources>

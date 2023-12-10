@@ -586,7 +586,7 @@ fun NavigationDrawerHeader(value: String?, darkTheme: Boolean) {
 
             Row {
                 NavigationDrawerText(
-                    title = "Yakınım: ",
+                    title = UIText.StringResource(R.string.my_relative).likeString() + " ",
                     textUnit = 14.sp,
                     color = Color.White,
                     shadowColor = if (darkTheme) Color.Gray else Color.Black,
@@ -612,7 +612,7 @@ fun NavigationDrawerHeader(value: String?, darkTheme: Boolean) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(componentShapes.small),
-                        label = { Text(text = "Email") },
+                        label = { Text(text = UIText.StringResource(R.string.email).likeString()) },
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = Color.White,
                             focusedLabelColor = Color.White,
@@ -636,7 +636,7 @@ fun NavigationDrawerHeader(value: String?, darkTheme: Boolean) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(componentShapes.small),
-                        label = { Text(text = "Title") },
+                        label = { Text(text = UIText.StringResource(R.string.title).likeString()) },
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = Color.White,
                             focusedLabelColor = Color.White,
@@ -660,7 +660,7 @@ fun NavigationDrawerHeader(value: String?, darkTheme: Boolean) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(componentShapes.small),
-                        label = { Text(text = "Message") },
+                        label = { Text(text = UIText.StringResource(R.string.message).likeString()) },
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = Color.White,
                             focusedLabelColor = Color.White,

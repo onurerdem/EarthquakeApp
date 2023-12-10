@@ -102,4 +102,7 @@
     <string name="exit">Exit</string>
     <string name="earthquake_information_provider">"Earthquake information provider: "</string>
     <string name="show_password">Show password</string>
+    <string name="my_relative">My Relative: </string>
+    <string name="title">Title</string>
+    <string name="message">Message</string>
 </resources>
