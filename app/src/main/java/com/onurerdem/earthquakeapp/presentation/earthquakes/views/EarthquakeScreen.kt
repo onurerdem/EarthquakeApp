@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.app.LocaleManager
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Build
 import android.os.LocaleList
 import android.util.Log
@@ -90,6 +91,7 @@ import com.onurerdem.earthquakeapp.presentation.saveThemeMode
 import kotlinx.coroutines.launch
 import com.onurerdem.earthquakeapp.presentation.NotificationWorker
 import java.time.Duration
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -233,6 +235,16 @@ fun EarthquakeScreen(
                             LocaleListCompat.forLanguageTags("tr")
                         )
                     }
+
+                    if (isTurkish) {
+                        Locale.setDefault(Locale("tr"))
+                    }
+                    val config = Configuration()
+                    config.setLocale(Locale.getDefault())
+                    @Suppress("DEPRECATION")
+                    context.resources.updateConfiguration(config, context.resources.displayMetrics)
+
+                    activity?.recreate()
                 },
                 onConfirmation = {
                     openLanguageAlertDialog.value = false
@@ -252,6 +264,16 @@ fun EarthquakeScreen(
                             LocaleListCompat.forLanguageTags("en")
                         )
                     }
+
+                    if (!isTurkish) {
+                        Locale.setDefault(Locale("en"))
+                    }
+                    val config = Configuration()
+                    config.setLocale(Locale.getDefault())
+                    @Suppress("DEPRECATION")
+                    context.resources.updateConfiguration(config, context.resources.displayMetrics)
+
+                    activity?.recreate()
                 },
                 dialogTitle = UIText.StringResource(R.string.language).likeString(),
                 dialogText = UIText.StringResource(R.string.you_can_choose_the_language_you_want_to_use)
@@ -484,6 +506,14 @@ fun EarthquakeScreen(
                                 LocaleListCompat.forLanguageTags("tr")
                             )
                         }
+
+                        Locale.setDefault(Locale("tr"))
+                        val config = Configuration()
+                        config.setLocale(Locale.getDefault())
+                        @Suppress("DEPRECATION")
+                        context.resources.updateConfiguration(config, context.resources.displayMetrics)
+
+                        activity?.recreate()
                     } else {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                             context.getSystemService(LocaleManager::class.java)
@@ -493,6 +523,14 @@ fun EarthquakeScreen(
                                 LocaleListCompat.forLanguageTags("en")
                             )
                         }
+
+                        Locale.setDefault(Locale("en"))
+                        val config = Configuration()
+                        config.setLocale(Locale.getDefault())
+                        @Suppress("DEPRECATION")
+                        context.resources.updateConfiguration(config, context.resources.displayMetrics)
+
+                        activity?.recreate()
                     }
                 },
                 onAllowNotificationUpdated = {
