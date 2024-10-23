@@ -105,4 +105,5 @@
     <string name="my_relative">My Relative: </string>
     <string name="title">Title</string>
     <string name="message">Message</string>
+    <string name="disclaimer_of_liability_statement">Disclaimer of Liability Statement</string>
 </resources>

@@ -7,4 +7,6 @@ object Constants {
     const val FCM_BASE_URL = "https://fcm.googleapis.com/"
     const val CONTENT_TYPE = "application/json"
     const val SERVER_KEY = "AAAAjsW_WHs:APA91bGnD9xyHOYgIyv2Xl9qvLe0GCkFcnNuDUD0xXd8LPqZ4pu9MYKDnzku1V1y3aZFmMGDLT8Mf6HClh_5Tk4WyejmKFuJq8erCopzNL4MVjplnjviiEqHDxJW7RJsMgy-vsUzD7m4"
+
+    const val DISCLAIMER_OF_LIABILITY_STATEMENT_URL = "https://erdem-onur.blogspot.com/2024/10/earthquake-app-sorumluluk-reddi-beyan.html"
 }

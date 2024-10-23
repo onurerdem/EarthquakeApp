@@ -2,8 +2,11 @@ package com.onurerdem.earthquakeapp.presentation
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
-import android.view.View
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -72,8 +75,6 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.onurerdem.earthquakeapp.R
 import com.onurerdem.earthquakeapp.data.di.RetrofitObject
@@ -82,6 +83,7 @@ import com.onurerdem.earthquakeapp.domain.model.NotificationData
 import com.onurerdem.earthquakeapp.domain.model.PushNotification
 import com.onurerdem.earthquakeapp.presentation.ui.theme.EarthquakeAppTheme
 import com.onurerdem.earthquakeapp.presentation.ui.theme.componentShapes
+import com.onurerdem.earthquakeapp.util.Constants.DISCLAIMER_OF_LIABILITY_STATEMENT_URL
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -865,6 +867,29 @@ fun NavigationDrawerBody(
                         }
                     }
                 }
+            }
+        }
+
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(all = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                val launcher = rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.StartActivityForResult()
+                ) { result ->
+
+                }
+                ClickableUnderLinedTextComponent(
+                    value = UIText.StringResource(R.string.disclaimer_of_liability_statement).likeString(),
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(DISCLAIMER_OF_LIABILITY_STATEMENT_URL))
+                        launcher.launch(intent)
+                    }
+                )
             }
         }
     }
