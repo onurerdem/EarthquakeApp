@@ -1,7 +1,7 @@
 # EarthquakeApp
 Türkiye'deki depremleri inceleyebilirsiniz. Deprem anında bildirim yollanmaz.
 
-Kandilli Rasathanesi'nin apisi kullanılarak MVVM ve Clean Architecture ile oluşturulmuş Android Deprem Uygulaması.
+Kandilli Rasathanesi'nin API'si ve Kotlin Jetpack Compose kullanılarak MVVM ve Clean Architecture ile oluşturulmuş Android Deprem Uygulaması.
 
 ## Uygulama Önizlemeleri
 <p align="center">
