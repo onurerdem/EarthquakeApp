@@ -21,15 +21,15 @@ Kandilli Rasathanesi'nin API'si ve Kotlin Jetpack Compose kullanılarak MVVM ve 
 
 Splash Ekranı | İlk Onboarding Ekranı | İkinci Onboarding Ekranı | Üçüncü Onboarding Ekranı | Kayıt Ekranı | Kullanım Koşulları Ekranı Başı
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
-<img src="docs/image/Screenshot_1702237878.png" width="100%"/> | <img src="docs/image/Screenshot_1702237960.png" width="75%"/> | <img src="docs/image/Screenshot_1702237980.png" width="75%"/> | <img src="docs/image/Screenshot_1702237986.png" width="75%"/> | <img src="docs/image/Screenshot_1702238013.png" width="100%"/> | <img src="docs/image/Screenshot_1702238045.png" width="100%"/> |
+<img src="docs/image/Screenshot_1702237878.png" width="100%"/> | <img src="docs/image/Screenshot_1702237960.png" width="75%"/> | <img src="docs/image/Screenshot_1702237980.png" width="75%"/> | <img src="docs/image/Screenshot_1702237986.png" width="75%"/> | <img src="docs/image/Screenshot_1702238013.png" width="100%"/> | <img src="docs/image/Screenshot_1702238045.png" width="87%"/> |
 
 Kullanım Koşulları Ekranı Ortası | Kullanım Koşulları Ekranı Sonu | Giriş Ekranı | Parola Sıfırlama Ekranı | Depremler Ekranı |
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
-<img src="docs/image/Screenshot_1702238058.png" width="70%"/> | <img src="docs/image/Screenshot_1702238067.png" width="75%"/> | <img src="docs/image/Screenshot_1702238078.png" width="75%"/> | <img src="docs/image/Screenshot_1702238088.png" width="70%"/> | <img src="docs/image/Screenshot_1702238129.png" width="80%"/> |
+<img src="docs/image/Screenshot_1702238058.png" width="76%"/> | <img src="docs/image/Screenshot_1702238067.png" width="75%"/> | <img src="docs/image/Screenshot_1702238078.png" width="85%"/> | <img src="docs/image/Screenshot_1702238088.png" width="75%"/> | <img src="docs/image/Screenshot_1702238129.png" width="70%"/> |
 
 Profil ve Ayarlar Ekranı | Deprem Detayları Ekranı Başı | Deprem Detayları Ekranı Ortası | Deprem Detayları Ekranı Sonu | Arama Ekranı |
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
-<img src="docs/image/Screenshot_1702238138.png" width="70%"/> | <img src="docs/image/Screenshot_1702238159.png" width="70%"/> | <img src="docs/image/Screenshot_1702238164.png" width="70%"/> | <img src="docs/image/Screenshot_1702238394.png" width="70%"/> | <img src="docs/image/Screenshot_1702238234.png" width="80%"/> |
+<img src="docs/image/Screenshot_1702238138.png" width="80%"/> | <img src="docs/image/Screenshot_1702238159.png" width="73%"/> | <img src="docs/image/Screenshot_1702238164.png" width="73%"/> | <img src="docs/image/Screenshot_1702238394.png" width="73%"/> | <img src="docs/image/Screenshot_1702238234.png" width="80%"/> |
 
 ## Teknoloji Yığını
 - [Kotlin](https://developer.android.com/kotlin) - Kotlin, JVM üzerinde çalışabilen bir programlama dilidir. Google, Android Studio'da resmi olarak desteklenen programlama dillerinden biri olarak Kotlin'i duyurdu; ve Android topluluğu, Java'dan Kotlin'e büyük bir hızla geçiş yapıyor.
