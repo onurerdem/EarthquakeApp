@@ -19,15 +19,15 @@ Kandilli Rasathanesi'nin API'si ve Kotlin Jetpack Compose kullanılarak MVVM ve 
 
 ## Uygulama Ekran Görüntüleri
 
-Splash Ekranı | İlk Onboarding Ekranı | İkinci Onboarding Ekranı | Üçüncü Onboarding Ekranı | Giriş Ekranı | Kayıt Ekranı
+Splash Ekranı | İlk Onboarding Ekranı | İkinci Onboarding Ekranı | Üçüncü Onboarding Ekranı | Kayıt Ekranı | Kullanım Koşulları Ekranı Başı
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
 <img src="docs/image/Screenshot_1702237878.png" width="100%"/> | <img src="docs/image/Screenshot_1702237960.png" width="75%"/> | <img src="docs/image/Screenshot_1702237980.png" width="75%"/> | <img src="docs/image/Screenshot_1702237986.png" width="75%"/> | <img src="docs/image/Screenshot_1702238013.png" width="100%"/> | <img src="docs/image/Screenshot_1702238045.png" width="100%"/> |
 
-Ürünler Ekranı | Ürün Detay Ekranı | Arama Ekranı | Alışveriş Sepeti Ürün Ekranı | Profil Ekranı |
+Kullanım Koşulları Ekranı Ortası | Kullanım Koşulları Ekranı Sonu | Giriş Ekranı | Parola Sıfırlama Ekranı | Depremler Ekranı |
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
 <img src="docs/image/Screenshot_1702238058.png" width="70%"/> | <img src="docs/image/Screenshot_1702238067.png" width="75%"/> | <img src="docs/image/Screenshot_1702238078.png" width="75%"/> | <img src="docs/image/Screenshot_1702238088.png" width="70%"/> | <img src="docs/image/Screenshot_1702238129.png" width="80%"/> |
 
-Ürünler Ekranı | Ürün Detay Ekranı | Arama Ekranı | Alışveriş Sepeti Ürün Ekranı | Profil Ekranı |
+Profil ve Ayarlar Ekranı | Deprem Detayları Ekranı Başı | Deprem Detayları Ekranı Ortası | Deprem Detayları Ekranı Sonu | Arama Ekranı |
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
 <img src="docs/image/Screenshot_1702238138.png" width="70%"/> | <img src="docs/image/Screenshot_1702238159.png" width="70%"/> | <img src="docs/image/Screenshot_1702238164.png" width="70%"/> | <img src="docs/image/Screenshot_1702238394.png" width="70%"/> | <img src="docs/image/Screenshot_1702238234.png" width="80%"/> |
 
