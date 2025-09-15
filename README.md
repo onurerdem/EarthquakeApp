@@ -21,7 +21,7 @@ Kandilli Rasathanesi'nin API'si ve Kotlin Jetpack Compose kullanılarak MVVM ve 
 
 Splash Ekranı | İlk Onboarding Ekranı | İkinci Onboarding Ekranı | Üçüncü Onboarding Ekranı | Kayıt Ekranı | Kullanım Koşulları Ekranı Başı
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
-<img src="docs/image/Screenshot_1702237878.png" width="100%"/> | <img src="docs/image/Screenshot_1702237960.png" width="75%"/> | <img src="docs/image/Screenshot_1702237980.png" width="75%"/> | <img src="docs/image/Screenshot_1702237986.png" width="75%"/> | <img src="docs/image/Screenshot_1702238013.png" width="100%"/> | <img src="docs/image/Screenshot_1702238045.png" width="87%"/> |
+<img src="docs/image/Screenshot_1702237878.png" width="110%"/> | <img src="docs/image/Screenshot_1702237960.png" width="75%"/> | <img src="docs/image/Screenshot_1702237980.png" width="75%"/> | <img src="docs/image/Screenshot_1702237986.png" width="75%"/> | <img src="docs/image/Screenshot_1702238013.png" width="110%"/> | <img src="docs/image/Screenshot_1702238045.png" width="87%"/> |
 
 Kullanım Koşulları Ekranı Ortası | Kullanım Koşulları Ekranı Sonu | Giriş Ekranı | Parola Sıfırlama Ekranı | Depremler Ekranı |
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
