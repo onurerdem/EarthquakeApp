@@ -5,10 +5,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -52,62 +57,29 @@ fun EarthquakeDetailScreen(
 
     val cameraPositionState = rememberCameraPositionState()
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(if (isDarkThemeMode(context = context)) Color.DarkGray else Color.White),
-        contentAlignment = Alignment.Center
-    ) {
-        state.earthquake?.let {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = UIText.StringResource(R.string.location_point_of_the_earthquake)
-                        .likeString(),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(8.dp),
-                    color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
-                    style = MaterialTheme.typography.subtitle1,
-                    fontWeight = FontWeight.Bold
-                )
+    val statusBarColor = if (isDarkThemeMode(context = context)) Color(0xFF8FD7FD) else Color(0xFF00668A)
 
-                GoogleMap(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.5f)
-                        .padding(horizontal = 8.dp),
-                    cameraPositionState = cameraPositionState
-                ) {
-                    state.earthquake.geojson.coordinates.let {
-                        MarkerInfoWindow(
-                            state = rememberMarkerState(position = LatLng(it.get(1), it.get(0)))
-                        )
+    Column {
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
+                .background(statusBarColor)
+        )
 
-                        val scope = rememberCoroutineScope()
-                        MapEffect(key1 = it) { map ->
-                            map.setOnMapLoadedCallback {
-                                scope.launch {
-                                    cameraPositionState.animate(
-                                        update = CameraUpdateFactory.newLatLngZoom(
-                                            LatLng(it.get(1), it.get(0)),
-                                            8f
-                                        ),
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(if (isDarkThemeMode(context = context)) Color.DarkGray else Color.White),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            state.earthquake?.let {
                 Column(
-                    modifier = Modifier.verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = UIText.StringResource(R.string.details_of_the_earthquake)
+                        text = UIText.StringResource(R.string.location_point_of_the_earthquake)
                             .likeString(),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp),
@@ -116,65 +88,42 @@ fun EarthquakeDetailScreen(
                         fontWeight = FontWeight.Bold
                     )
 
-                    Text(
-                        text = it.title,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(8.dp),
-                        color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
-                    )
+                    GoogleMap(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.5f)
+                            .padding(horizontal = 8.dp),
+                        cameraPositionState = cameraPositionState
+                    ) {
+                        state.earthquake.geojson.coordinates.let {
+                            MarkerInfoWindow(
+                                state = rememberMarkerState(position = LatLng(it.get(1), it.get(0)))
+                            )
 
-                    Text(
-                        text = UIText.StringResource(R.string.date)
-                            .likeString() + " " + formatDateForTurkishLocale(
-                            date = it.date.substring(0, 10),
-                            sharedPreferencesManager = SharedPreferencesManager(context = context)
-                        ) + ", " + UIText.StringResource(R.string._hour)
-                            .likeString() + " " + it.date.substring(10, 19),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(8.dp),
-                        color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
-                    )
+                            val scope = rememberCoroutineScope()
+                            MapEffect(key1 = it) { map ->
+                                map.setOnMapLoadedCallback {
+                                    scope.launch {
+                                        cameraPositionState.animate(
+                                            update = CameraUpdateFactory.newLatLngZoom(
+                                                LatLng(it.get(1), it.get(0)),
+                                                8f
+                                            ),
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
 
-                    Text(
-                        text = UIText.StringResource(R.string.earthquake_information_provider)
-                            .likeString() + " " + it.provider.replaceFirstChar {
-                            if (it.isLowerCase()) it.titlecase(
-                                Locale.ROOT
-                            ) else it.toString()
-                        },
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(8.dp),
-                        color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
-                    )
-
-                    Text(
-                        text = UIText.StringResource(R.string.earthquake_magnitude)
-                            .likeString() + " " + it.mag.toString(),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(8.dp),
-                        color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
-                    )
-
-                    Text(
-                        text = UIText.StringResource(R.string.earthquake_magnitude)
-                            .likeString() + " " + it.depth.toString() + " " + UIText.StringResource(R.string._km)
-                            .likeString(),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(8.dp),
-                        color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
-                    )
-
-                    Text(
-                        text = UIText.StringResource(R.string.population_of_the_city)
-                            .likeString() + " " + it.population.toString(),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(8.dp),
-                        color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
-                    )
-
-                    Column {
+                    Column(
+                        modifier = Modifier.verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                         Text(
-                            text = UIText.StringResource(R.string.cities_close_to_the_earthquake).likeString(),
+                            text = UIText.StringResource(R.string.details_of_the_earthquake)
+                                .likeString(),
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(8.dp),
                             color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
@@ -182,52 +131,128 @@ fun EarthquakeDetailScreen(
                             fontWeight = FontWeight.Bold
                         )
 
-                        LazyRow(modifier = Modifier.fillMaxWidth()) {
-                            items(state.earthquake.closestCities) { closestCities ->
-                                EarthquakeDetailListRow(
-                                    closestCity = closestCities,
-                                    context = context
-                                )
-                            }
+                        Text(
+                            text = it.title,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(8.dp),
+                            color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
+                        )
+
+                        if (!it.date.isNullOrBlank() && it.date.length >= 19) {
+                            Text(
+                                text = UIText.StringResource(R.string.date)
+                                    .likeString() + " " + formatDateForTurkishLocale(
+                                    date = it.date.substring(0, 10),
+                                    sharedPreferencesManager = SharedPreferencesManager(context = context)
+                                ) + ", " + UIText.StringResource(R.string._hour)
+                                    .likeString() + " " + it.date.substring(10, 19),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(8.dp),
+                                color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
+                            )
+                        } else {
+                            Text(
+                                text = UIText.StringResource(R.string.date_not_available).likeString(),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(8.dp),
+                                color = Color.Gray
+                            )
                         }
 
                         Text(
-                            text = UIText.StringResource(R.string.airports_close_to_the_earthquake).likeString(),
+                            text = UIText.StringResource(R.string.earthquake_information_provider)
+                                .likeString() + " " + it.provider.replaceFirstChar {
+                                if (it.isLowerCase()) it.titlecase(
+                                    Locale.ROOT
+                                ) else it.toString()
+                            },
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(8.dp),
-                            color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
-                            style = MaterialTheme.typography.subtitle1,
-                            fontWeight = FontWeight.Bold
+                            color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
                         )
 
-                        LazyRow(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 8.dp)
-                        ) {
-                            items(state.earthquake.airports) { airports ->
-                                EarthquakeDetailListRow(airports = airports, context = context)
+                        Text(
+                            text = UIText.StringResource(R.string.earthquake_magnitude)
+                                .likeString() + " " + it.mag.toString(),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(8.dp),
+                            color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
+                        )
+
+                        Text(
+                            text = UIText.StringResource(R.string.earthquake_magnitude)
+                                .likeString() + " " + it.depth.toString() + " " + UIText.StringResource(R.string._km)
+                                .likeString(),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(8.dp),
+                            color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
+                        )
+
+                        Text(
+                            text = UIText.StringResource(R.string.population_of_the_city)
+                                .likeString() + " " + it.population.toString(),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(8.dp),
+                            color = if (isDarkThemeMode(context = context)) Color.White else Color.Black
+                        )
+
+                        Column {
+                            Text(
+                                text = UIText.StringResource(R.string.cities_close_to_the_earthquake).likeString(),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(8.dp),
+                                color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
+                                style = MaterialTheme.typography.subtitle1,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                                items(state.earthquake.closestCities) { closestCities ->
+                                    EarthquakeDetailListRow(
+                                        closestCity = closestCities,
+                                        context = context
+                                    )
+                                }
+                            }
+
+                            Text(
+                                text = UIText.StringResource(R.string.airports_close_to_the_earthquake).likeString(),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(8.dp),
+                                color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
+                                style = MaterialTheme.typography.subtitle1,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            LazyRow(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 8.dp)
+                            ) {
+                                items(state.earthquake.airports) { airports ->
+                                    EarthquakeDetailListRow(airports = airports, context = context)
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        if (state.error.isNotBlank()) {
-            Text(
-                text = state.error,
-                color = MaterialTheme.colors.error,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(14.dp)
-                    .align(Alignment.Center)
-            )
-        }
+            if (state.error.isNotBlank()) {
+                Text(
+                    text = state.error,
+                    color = MaterialTheme.colors.error,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(14.dp)
+                        .align(Alignment.Center)
+                )
+            }
 
-        if (state.isLoading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            if (state.isLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
         }
     }
 }

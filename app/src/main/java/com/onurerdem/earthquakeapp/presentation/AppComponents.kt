@@ -24,11 +24,11 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.LightMode
-import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Nightlight
@@ -52,6 +52,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.SpanStyle
@@ -87,6 +88,7 @@ import com.onurerdem.earthquakeapp.util.Constants.DISCLAIMER_OF_LIABILITY_STATEM
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 @Composable
 fun NormalTextComponent(value: String, context: Context) {
@@ -276,7 +278,8 @@ fun CheckboxComponent(
             mutableStateOf(false)
         }
 
-        Checkbox(checked = checkedState.value,
+        Checkbox(
+            checked = checkedState.value,
             onCheckedChange = {
                 checkedState.value = !checkedState.value
                 onCheckedChange.invoke(it)
@@ -488,40 +491,61 @@ fun ClickableUnderLinedTextComponent(value: String, onClick: () -> Unit) {
 
 @Composable
 fun AppToolbar(
-    toolbarTitle: String, logoutButtonClicked: () -> Unit,
+    toolbarTitle: String,
+    logoutButtonClicked: () -> Unit,
     navigationIconClicked: () -> Unit,
     darkTheme: Boolean
 ) {
-    TopAppBar(
-        backgroundColor = if (darkTheme) Color.Black else Color.Blue,
-        title = {
-            Text(
-                text = toolbarTitle, color = Color.White
-            )
-        },
-        navigationIcon = {
-            IconButton(onClick = {
-                navigationIconClicked.invoke()
-            }) {
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+    val toolbarHeight = screenHeight / 15
+
+    val statusBarColor = if (darkTheme) Color(0xFF8FD7FD) else Color(0xFF00668A)
+    val toolbarColor = if (darkTheme) Color.Black else Color.Blue
+
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
+                .background(statusBarColor)
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(toolbarHeight)
+                .background(toolbarColor),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            IconButton(onClick = navigationIconClicked) {
                 Icon(
                     imageVector = Icons.Filled.Menu,
                     contentDescription = UIText.StringResource(R.string.menu).likeString(),
                     tint = Color.White
                 )
             }
-        },
-        actions = {
-            IconButton(onClick = {
-                logoutButtonClicked.invoke()
-            }) {
+
+            Text(
+                text = toolbarTitle,
+                color = Color.White,
+                style = androidx.compose.material.MaterialTheme.typography.h6,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center
+            )
+
+            IconButton(onClick = logoutButtonClicked) {
                 Icon(
-                    imageVector = Icons.Filled.Logout,
+                    imageVector = Icons.AutoMirrored.Filled.Logout,
                     contentDescription = UIText.StringResource(R.string.log_out).likeString(),
                     tint = Color.White
                 )
             }
         }
-    )
+    }
 }
 
 @SuppressLint("StaticFieldLeak")
@@ -534,6 +558,15 @@ var collectionReference = db.collection("Users")
 
 @Composable
 fun NavigationDrawerHeader(value: String?, darkTheme: Boolean) {
+    val statusBarColor = if (darkTheme) Color(0xFF6091AB) else Color(0xFF00445D)
+
+    Spacer(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
+            .background(statusBarColor)
+    )
+
     Box(
         modifier = Modifier
             .background(
@@ -662,7 +695,11 @@ fun NavigationDrawerHeader(value: String?, darkTheme: Boolean) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(componentShapes.small),
-                        label = { Text(text = UIText.StringResource(R.string.message).likeString()) },
+                        label = {
+                            Text(
+                                text = UIText.StringResource(R.string.message).likeString()
+                            )
+                        },
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = Color.White,
                             focusedLabelColor = Color.White,
@@ -673,7 +710,11 @@ fun NavigationDrawerHeader(value: String?, darkTheme: Boolean) {
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                         keyboardActions = KeyboardActions {
                             localFocusManager.clearFocus()
-                            send(email = textValueEMail.value, title = textValueTitle.value, message = textValueMessage.value)
+                            send(
+                                email = textValueEMail.value,
+                                title = textValueTitle.value,
+                                message = textValueMessage.value
+                            )
                         },
                         singleLine = true,
                         maxLines = 1,
@@ -688,10 +729,9 @@ fun NavigationDrawerHeader(value: String?, darkTheme: Boolean) {
     }
 }
 
-fun getToken(email: String): String{
+fun getToken(email: String): String {
     collectionReference.whereEqualTo("useremail", email)
         .addSnapshotListener { value, e ->
-            //list.clear()
             if (e != null) {
                 println("hata: " + e)
             } else {
@@ -715,30 +755,27 @@ fun getToken(email: String): String{
 
 fun send(email: String, title: String, message: String) {
     if (title.isNotEmpty() && message.isNotEmpty()) {
-        val data = NotificationData(title,message)
-        //val notification = PushNotification(data,"dnbNWZy4SoW02xmkvFBkSY:APA91bERvdZyGmvJsdxrQ3eyOHnc6BFHuVTx2a1NfVqmD_DGBLokphXcgyXu2uM8LrkZMukcl0mPBw7dTa_AOoW8W10Te4v5t2qJo__xArJHwkneZd_HLlTYhD3Ug27XTLDCFztyoHUz")
-        //val notification = PushNotification(data, token)
+        val data = NotificationData(title, message)
         val notification = PushNotification(data, getToken(email))
-        /*println("token: " + token)
-        println("token5: " + getToken(email))*/
         sendNotification(notification)
     }
 }
 
-private fun sendNotification(pushNotification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
-    try {
+private fun sendNotification(pushNotification: PushNotification) =
+    CoroutineScope(Dispatchers.IO).launch {
+        try {
 
-        val response = RetrofitObject.api.postNotification(pushNotification)
-        if (response.isSuccessful) {
-            println(response)
-        } else {
-            println(response.errorBody())
+            val response = RetrofitObject.api.postNotification(pushNotification)
+            if (response.isSuccessful) {
+                println(response)
+            } else {
+                println(response.errorBody())
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-
-    } catch (e : Exception) {
-        e.printStackTrace()
     }
-}
 
 @Composable
 fun NavigationDrawerBody(
@@ -886,7 +923,10 @@ fun NavigationDrawerBody(
                 ClickableUnderLinedTextComponent(
                     value = UIText.StringResource(R.string.disclaimer_of_liability_statement).likeString(),
                     onClick = {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(DISCLAIMER_OF_LIABILITY_STATEMENT_URL))
+                        val intent = Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse(DISCLAIMER_OF_LIABILITY_STATEMENT_URL)
+                        )
                         launcher.launch(intent)
                     }
                 )
@@ -971,12 +1011,13 @@ fun ThemeSwitcher(
         animationSpec = animationSpec
     )
 
-    Box(modifier = Modifier
-        .width(size * 2)
-        .height(size)
-        .clip(shape = parentShape)
-        .clickable { onClick() }
-        .background(MaterialTheme.colorScheme.secondaryContainer)
+    Box(
+        modifier = Modifier
+            .width(size * 2)
+            .height(size)
+            .clip(shape = parentShape)
+            .clickable { onClick() }
+            .background(MaterialTheme.colorScheme.secondaryContainer)
     ) {
         Box(
             modifier = Modifier
@@ -1053,12 +1094,13 @@ fun DateFormatSwitcher(
         animationSpec = animationSpec
     )
 
-    Box(modifier = Modifier
-        .width(size * 2)
-        .height(size)
-        .clip(shape = parentShape)
-        .clickable { onClick() }
-        .background(MaterialTheme.colorScheme.secondaryContainer)
+    Box(
+        modifier = Modifier
+            .width(size * 2)
+            .height(size)
+            .clip(shape = parentShape)
+            .clickable { onClick() }
+            .background(MaterialTheme.colorScheme.secondaryContainer)
     ) {
         Box(
             modifier = Modifier
@@ -1106,16 +1148,25 @@ fun DateFormatSwitcher(
     }
 }
 
-fun saveIsTurkish(isTurkish: Boolean, context: Context) {
-    val sharedPreferences = context.getSharedPreferences("ThemePreferences", Context.MODE_PRIVATE)
-    val editor = sharedPreferences.edit()
-    editor.putBoolean("isTurkish", isTurkish)
-    editor.apply()
-}
+object LocaleManager {
+    fun setLocale(context: Context, languageCode: String) {
+        val sharedPreferences = context.getSharedPreferences("ThemePreferences", Context.MODE_PRIVATE)
+        sharedPreferences.edit().putString("language_code", languageCode).apply()
+    }
 
-fun isTurkish(context: Context): Boolean {
-    val sharedPreferences = context.getSharedPreferences("ThemePreferences", Context.MODE_PRIVATE)
-    return sharedPreferences.getBoolean("isTurkish", false)
+    fun getLanguageCode(context: Context): String {
+        val sharedPreferences = context.getSharedPreferences("ThemePreferences", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("language_code", null) ?: Locale.getDefault().language
+    }
+
+    fun setLocaleOnAttach(context: Context): Context {
+        val languageCode = getLanguageCode(context)
+        val locale = Locale(languageCode)
+        Locale.setDefault(locale)
+        val config = context.resources.configuration
+        config.setLocale(locale)
+        return context.createConfigurationContext(config)
+    }
 }
 
 @Composable
@@ -1135,12 +1186,13 @@ fun LanguageSwitcher(
         animationSpec = animationSpec
     )
 
-    Box(modifier = Modifier
-        .width(size * 2)
-        .height(size)
-        .clip(shape = parentShape)
-        .clickable { onClick() }
-        .background(MaterialTheme.colorScheme.secondaryContainer)
+    Box(
+        modifier = Modifier
+            .width(size * 2)
+            .height(size)
+            .clip(shape = parentShape)
+            .clickable { onClick() }
+            .background(MaterialTheme.colorScheme.secondaryContainer)
     ) {
         Box(
             modifier = Modifier
@@ -1217,12 +1269,13 @@ fun NotificationSwitcher(
         animationSpec = animationSpec
     )
 
-    Box(modifier = Modifier
-        .width(size * 2)
-        .height(size)
-        .clip(shape = parentShape)
-        .clickable { onClick() }
-        .background(MaterialTheme.colorScheme.secondaryContainer)
+    Box(
+        modifier = Modifier
+            .width(size * 2)
+            .height(size)
+            .clip(shape = parentShape)
+            .clickable { onClick() }
+            .background(MaterialTheme.colorScheme.secondaryContainer)
     ) {
         Box(
             modifier = Modifier

@@ -5,7 +5,7 @@ import com.onurerdem.earthquakeapp.data.remote.dto.ClosestCityX
 import com.onurerdem.earthquakeapp.data.remote.dto.GeojsonX
 
 data class EarthquakeDetail (
-    val date: String,
+    val date: String?,
     val depth: Double,
     val geojson: GeojsonX,
     val closestCities: List<ClosestCityX>,

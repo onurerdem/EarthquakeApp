@@ -53,6 +53,7 @@
     <string name="date_format_setting">Tarih Biçimi Ayarı</string>
     <string name="_km">" km"</string>
     <string name="date">"Tarih: "</string>
+    <string name="date_not_available">Tarih bilgisi yok.</string>
     <string name="_hour">" Saat:"</string>
     <string name="magnitude">"Büyüklük: "</string>
     <string name="depth">"Derinlik: "</string>

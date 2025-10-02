@@ -42,7 +42,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -119,6 +121,16 @@ fun OnboardingScreen(
         }
     }
 
+    val configuration = LocalConfiguration.current
+
+    val screenHeightDp = configuration.screenWidthDp.dp
+
+    val calculatedFontSizeInDp = screenHeightDp / 12
+
+    val fontSizeInSp = with(LocalDensity.current) {
+        calculatedFontSizeInDp.toSp()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -156,7 +168,7 @@ fun OnboardingScreen(
                 Text(
                     text = titles[currentPage],
                     textAlign = TextAlign.Center,
-                    fontSize = 44.sp,
+                    fontSize = fontSizeInSp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .fillMaxHeight(0.175f),

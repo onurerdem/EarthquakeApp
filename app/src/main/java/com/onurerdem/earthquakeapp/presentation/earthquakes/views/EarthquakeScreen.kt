@@ -2,15 +2,11 @@ package com.onurerdem.earthquakeapp.presentation.earthquakes.views
 
 import android.Manifest
 import android.app.Activity
-import android.app.LocaleManager
 import android.content.Context
-import android.content.res.Configuration
 import android.os.Build
-import android.os.LocaleList
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -61,7 +57,6 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.work.BackoffPolicy
@@ -84,14 +79,12 @@ import com.onurerdem.earthquakeapp.presentation.allowNotification
 import com.onurerdem.earthquakeapp.presentation.earthquakes.EarthquakesEvent
 import com.onurerdem.earthquakeapp.presentation.earthquakes.EarthquakesViewModel
 import com.onurerdem.earthquakeapp.presentation.isDarkThemeMode
-import com.onurerdem.earthquakeapp.presentation.isTurkish
 import com.onurerdem.earthquakeapp.presentation.saveAllowNotification
-import com.onurerdem.earthquakeapp.presentation.saveIsTurkish
 import com.onurerdem.earthquakeapp.presentation.saveThemeMode
+import com.onurerdem.earthquakeapp.presentation.LocaleManager
 import kotlinx.coroutines.launch
 import com.onurerdem.earthquakeapp.presentation.NotificationWorker
 import java.time.Duration
-import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -123,7 +116,7 @@ fun EarthquakeScreen(
 
     var isDMYorN by remember { mutableStateOf(sharedPreferencesManager.getDMYorN()) }
 
-    var isTurkish by remember { mutableStateOf(isTurkish(context = context)) }
+    var isTurkish by remember { mutableStateOf(LocaleManager.getLanguageCode(context) == "tr") }
 
     var allowNotification by remember { mutableStateOf(allowNotification(context = context)) }
 
@@ -219,60 +212,12 @@ fun EarthquakeScreen(
             AlertDialogExample(
                 onDismissRequest = {
                     openLanguageAlertDialog.value = false
-                    if (!isTurkish(context = context)) {
-                        isTurkish = !isTurkish
-                        saveIsTurkish(
-                            isTurkish = !isTurkish(context = context),
-                            context = context
-                        )
-                    }
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        context.getSystemService(LocaleManager::class.java)
-                            .applicationLocales = LocaleList.forLanguageTags("tr")
-                    } else {
-                        AppCompatDelegate.setApplicationLocales(
-                            LocaleListCompat.forLanguageTags("tr")
-                        )
-                    }
-
-                    if (isTurkish) {
-                        Locale.setDefault(Locale("tr"))
-                    }
-                    val config = Configuration()
-                    config.setLocale(Locale.getDefault())
-                    @Suppress("DEPRECATION")
-                    context.resources.updateConfiguration(config, context.resources.displayMetrics)
-
+                    LocaleManager.setLocale(context, "tr")
                     activity?.recreate()
                 },
                 onConfirmation = {
                     openLanguageAlertDialog.value = false
-                    if (isTurkish(context = context)) {
-                        isTurkish = !isTurkish
-                        saveIsTurkish(
-                            isTurkish = !isTurkish(context = context),
-                            context = context
-                        )
-                    }
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        context.getSystemService(LocaleManager::class.java)
-                            .applicationLocales = LocaleList.forLanguageTags("en")
-                    } else {
-                        AppCompatDelegate.setApplicationLocales(
-                            LocaleListCompat.forLanguageTags("en")
-                        )
-                    }
-
-                    if (!isTurkish) {
-                        Locale.setDefault(Locale("en"))
-                    }
-                    val config = Configuration()
-                    config.setLocale(Locale.getDefault())
-                    @Suppress("DEPRECATION")
-                    context.resources.updateConfiguration(config, context.resources.displayMetrics)
-
+                    LocaleManager.setLocale(context, "en")
                     activity?.recreate()
                 },
                 dialogTitle = UIText.StringResource(R.string.language).likeString(),
@@ -492,46 +437,9 @@ fun EarthquakeScreen(
                     }
                 },
                 onLanguageUpdated = {
-                    isTurkish = !isTurkish
-                    saveIsTurkish(
-                        isTurkish = !isTurkish(context = context),
-                        context = context
-                    )
-                    if (isTurkish == true) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            context.getSystemService(LocaleManager::class.java)
-                                .applicationLocales = LocaleList.forLanguageTags("tr")
-                        } else {
-                            AppCompatDelegate.setApplicationLocales(
-                                LocaleListCompat.forLanguageTags("tr")
-                            )
-                        }
-
-                        Locale.setDefault(Locale("tr"))
-                        val config = Configuration()
-                        config.setLocale(Locale.getDefault())
-                        @Suppress("DEPRECATION")
-                        context.resources.updateConfiguration(config, context.resources.displayMetrics)
-
-                        activity?.recreate()
-                    } else {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            context.getSystemService(LocaleManager::class.java)
-                                .applicationLocales = LocaleList.forLanguageTags("en")
-                        } else {
-                            AppCompatDelegate.setApplicationLocales(
-                                LocaleListCompat.forLanguageTags("en")
-                            )
-                        }
-
-                        Locale.setDefault(Locale("en"))
-                        val config = Configuration()
-                        config.setLocale(Locale.getDefault())
-                        @Suppress("DEPRECATION")
-                        context.resources.updateConfiguration(config, context.resources.displayMetrics)
-
-                        activity?.recreate()
-                    }
+                    val newLang = if (isTurkish) "en" else "tr"
+                    LocaleManager.setLocale(context, newLang)
+                    activity?.recreate()
                 },
                 onAllowNotificationUpdated = {
                     allowNotification = !allowNotification
@@ -641,7 +549,8 @@ fun EarthquakeSearchBar(
     var prevLength by remember { mutableStateOf(0) }
 
     Box(modifier = modifier) {
-        TextField(value = text,
+        TextField(
+            value = text,
             onValueChange = {
                 text = it
                 if ((prevLength == 3 && it.length < 3) || it.length > 2) {

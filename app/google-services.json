@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "613203007611",
     "project_id": "earthquakeapp-acb66",
-    "storage_bucket": "earthquakeapp-acb66.appspot.com"
+    "storage_bucket": "earthquakeapp-acb66.firebasestorage.app"
   },
   "client": [
     {

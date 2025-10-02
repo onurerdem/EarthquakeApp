@@ -56,21 +56,33 @@ fun EarthquakeListRow(
                     .horizontalScroll(rememberScrollState())
             )
 
-            Text(
-                text = UIText.StringResource(R.string.date)
-                    .likeString() + " " + formatDateForTurkishLocale(
-                    date = earthquake.date.substring(0, 10),
-                    sharedPreferencesManager = SharedPreferencesManager(context = context)
-                ) + ", " + UIText.StringResource(R.string._hour)
-                    .likeString() + earthquake.date.substring(10, 19),
-                style = MaterialTheme.typography.subtitle2,
-                overflow = TextOverflow.Ellipsis,
-                color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
-                textAlign = TextAlign.Start,
-                modifier = Modifier
-                    .fillMaxWidth(.6f)
-                    .horizontalScroll(rememberScrollState())
-            )
+            if (!earthquake.date.isNullOrBlank() && earthquake.date.length >= 19) {
+                Text(
+                    text = UIText.StringResource(R.string.date)
+                        .likeString() + " " + formatDateForTurkishLocale(
+                        date = earthquake.date.substring(0, 10),
+                        sharedPreferencesManager = SharedPreferencesManager(context = context)
+                    ) + ", " + UIText.StringResource(R.string._hour)
+                        .likeString() + earthquake.date.substring(10, 19),
+                    style = MaterialTheme.typography.subtitle2,
+                    overflow = TextOverflow.Ellipsis,
+                    color = if (isDarkThemeMode(context = context)) Color.White else Color.Black,
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier
+                        .fillMaxWidth(.6f)
+                        .horizontalScroll(rememberScrollState())
+                )
+            } else {
+                Text(
+                    text = UIText.StringResource(R.string.date_not_available).likeString(),
+                    style = MaterialTheme.typography.subtitle2,
+                    overflow = TextOverflow.Ellipsis,
+                    color = Color.Gray,
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier
+                        .fillMaxWidth(.6f)
+                )
+            }
         }
 
         Column(

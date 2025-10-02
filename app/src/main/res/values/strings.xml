@@ -67,6 +67,7 @@
     <!-- EarthquakeListRow -->
     <string name="_km"> km</string> <!-- EarthquakeDetailListRow --> <!-- EarthquakeDetailScreen -->
     <string name="date">Date: </string> <!-- EarthquakeDetailScreen -->
+    <string name="date_not_available">No knowledge of history.</string> <!-- EarthquakeDetailScreen -->
     <string name="_hour"> Hour:</string> <!-- EarthquakeDetailScreen -->
     <string name="magnitude">Magnitude: </string>
     <string name="depth">Depth: </string>
