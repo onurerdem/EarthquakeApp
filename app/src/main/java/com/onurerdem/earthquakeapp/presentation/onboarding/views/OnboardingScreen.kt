@@ -18,9 +18,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -39,12 +39,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -108,7 +107,8 @@ fun OnboardingScreen(
                     activity?.finish()
                 },
                 dialogTitle = UIText.StringResource(R.string.exit).likeString(),
-                dialogText = UIText.StringResource(R.string.are_you_sure_you_want_to_quit).likeString(),
+                dialogText = UIText.StringResource(R.string.are_you_sure_you_want_to_quit)
+                    .likeString(),
                 icon = Icons.Default.ExitToApp,
                 iconContentColor = Color.Red,
                 confirmButtonText = UIText.StringResource(R.string.yes).likeString(),
@@ -121,77 +121,53 @@ fun OnboardingScreen(
         }
     }
 
-    val configuration = LocalConfiguration.current
-
-    val screenHeightDp = configuration.screenWidthDp.dp
-
-    val calculatedFontSizeInDp = screenHeightDp / 12
-
-    val fontSizeInSp = with(LocalDensity.current) {
-        calculatedFontSizeInDp.toSp()
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray),
+            .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray)
+            .navigationBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.wrapContentSize()
+            modifier = Modifier.weight(10f)
         ) { currentPage ->
             Column(
                 modifier = Modifier
-                    .wrapContentSize()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
+                verticalArrangement = Arrangement.Center
             ) {
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxHeight(if (images[currentPage] == images[1]) 0.0465f else 0.04f)
-                )
+                Spacer(modifier = Modifier.weight(0.5f))
+
                 Image(
                     painter = painterResource(id = images[currentPage]),
                     contentDescription = titles[currentPage],
                     modifier = Modifier
-                        .fillMaxHeight(if (images[currentPage] == images[1]) 0.4831f else 0.5f)
-                        .fillMaxWidth(if (images[currentPage] == images[0]) 0.87f else 0.8f),
-                    alignment = Alignment.TopCenter,
-                    contentScale = ContentScale.FillBounds
+                        .fillMaxWidth(0.9f)
+                        .weight(8f),
+                    contentScale = ContentScale.Fit
                 )
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxHeight(if (images[currentPage] == images[1]) 0.0765f else 0.05f)
-                )
+                Spacer(modifier = Modifier.weight(0.5f))
                 Text(
                     text = titles[currentPage],
                     textAlign = TextAlign.Center,
-                    fontSize = fontSizeInSp,
+                    fontSize = 44.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .fillMaxHeight(0.175f),
                     color = if (isSystemInDarkTheme()) Color.White else Color.Black
                 )
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxHeight(0.1f)
-                )
+                Spacer(modifier = Modifier.weight(0.5f))
                 Text(
                     text = descriptions[currentPage],
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp,
-                    modifier = Modifier
-                        .fillMaxHeight(0.31f),
                     color = if (isSystemInDarkTheme()) Color.White else Color.Black
-                )
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxHeight(0.2f)
                 )
             }
         }
+
+        Spacer(modifier = Modifier.weight(0.5f))
 
         PageIndicator(
             pageCount = images.size,
@@ -200,6 +176,19 @@ fun OnboardingScreen(
             pagerState = pagerState,
             scope = scope
         )
+
+        Spacer(modifier = Modifier.weight(0.5f))
+
+        ButtonsSection(
+            pagerState = pagerState,
+            navController = navController,
+            context = context,
+            scope = scope
+        )
+
+        if (state.error.isNotBlank() || state.isLoading) {
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
         if (state.error.isNotBlank()) {
             Text(
@@ -216,14 +205,9 @@ fun OnboardingScreen(
         if (state.isLoading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
         }
-    }
 
-    ButtonsSection(
-        pagerState = pagerState,
-        navController = navController,
-        context = context,
-        scope = scope
-    )
+        Spacer(modifier = Modifier.weight(0.5f))
+    }
 
     BackHandler {
         scope.launch {
@@ -259,7 +243,8 @@ fun ButtonsSection(
                     navController.navigate(Screen.RegisterScreen.route)
                 },
                 dialogTitle = UIText.StringResource(R.string.warning).likeString(),
-                dialogText = UIText.StringResource(R.string.are_you_sure_you_want_to_start).likeString(),
+                dialogText = UIText.StringResource(R.string.are_you_sure_you_want_to_start)
+                    .likeString(),
                 icon = Icons.Default.Warning,
                 iconContentColor = Color.Red,
                 confirmButtonText = UIText.StringResource(R.string.yes).likeString(),
@@ -272,32 +257,35 @@ fun ButtonsSection(
         }
     }
 
-    Box(
+    Row(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(28.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 28.dp)
+            .height(56.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        if (pagerState.currentPage != 0) {
-            Text(
-                text = UIText.StringResource(R.string.back).likeString(),
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .clickable {
+        Text(
+            text = UIText.StringResource(R.string.back).likeString(),
+            modifier = Modifier
+                .clickable(
+                    enabled = pagerState.currentPage != 0,
+                    onClick = {
                         scope.launch {
-                            val prevPage = pagerState.currentPage - 1
-                            pagerState.scrollToPage(prevPage)
+                            pagerState.scrollToPage(pagerState.currentPage - 1)
                         }
-                    },
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                color = if (isSystemInDarkTheme()) Color.White else Color.Black
-            )
-        }
+                    }
+                )
+                .alpha(if (pagerState.currentPage == 0) 0f else 1f),
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold,
+            color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+        )
+
         if (pagerState.currentPage != 2) {
             Text(
                 text = UIText.StringResource(R.string.next).likeString(),
                 modifier = Modifier
-                    .align(Alignment.BottomEnd)
                     .clickable {
                         scope.launch {
                             val nextPage = pagerState.currentPage + 1
@@ -314,8 +302,8 @@ fun ButtonsSection(
                     openAlertDialog.value = !openAlertDialog.value
                 },
                 modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                    .align(Alignment.BottomEnd),
+                    .fillMaxWidth(0.8f)
+                    .fillMaxHeight(),
                 colors = ButtonDefaults.buttonColors(
                     if (isSystemInDarkTheme()) Color.Gray else Color.Gray
                 )

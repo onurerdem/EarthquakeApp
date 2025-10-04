@@ -4,7 +4,7 @@
     <!-- OnboardingScreen -->
     <string name="earthquake_information">Earthquake Information</string>
     <string name="notifications_ready">Notifications Ready</string>
-    <string name="onboarding_descripton">Welcome! With our application, you can access earthquake information that occurred all over Turkey.</string>
+    <string name="onboarding_descripton">Welcome! With our application, you can access earthquake information that occurred all over Türkiye.</string>
     <string name="onboarding_descripton2">With our application, you can review earthquake data in detail and see earthquakes on the map.</string>
     <string name="onboarding_descripton3">You can review the data of new earthquakes by choosing to receive notifications with our application.</string>
 
